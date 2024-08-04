@@ -25,7 +25,6 @@ public class UserRestController {
     public ApiResult<Users> getUserTest() {
         try{
             Users user = userService.findByEmail();
-            System.out.println(user);
             return ApiUtils.success(user);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
