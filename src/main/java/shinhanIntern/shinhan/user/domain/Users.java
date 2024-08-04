@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
 
 @Entity
 @Getter
@@ -31,7 +32,7 @@ public class Users {
 
     @NonNull
     @Column(nullable = false)
-    private String Name;
+    private String name;
 
     @NonNull
     @Column(nullable = false, unique = true)
