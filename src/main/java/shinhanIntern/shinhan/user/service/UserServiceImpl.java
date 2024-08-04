@@ -1,12 +1,11 @@
 package shinhanIntern.shinhan.user.service;
 
-import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
 import shinhanIntern.shinhan.user.dto.LoginDto;
+import shinhanIntern.shinhan.user.dto.SigninDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 import shinhanIntern.shinhan.utils.jwt.JwtProvider;
 
@@ -43,4 +42,20 @@ public class UserServiceImpl implements UserService {
         return getUserInfo;
     }
 
+    public UsersDto signin(SigninDto signinDto) {
+        // 이메일 중복 확인
+        if (userRepository.findByEmail(signinDto.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 계정입니다.");
+        }
+
+        Users newUser = Users.builder()
+                .name(signinDto.getName())
+                .email(signinDto.getEmail())
+                .password(signinDto.getPassword())
+                .cash(signinDto.getCash())
+                .role(1)
+                .build();
+        userRepository.save(newUser);
+        return newUser.toDto();
+    }
 }

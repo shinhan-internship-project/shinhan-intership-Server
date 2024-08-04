@@ -16,6 +16,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
+import shinhanIntern.shinhan.user.dto.UsersDto;
 
 @Entity
 @Getter
@@ -60,4 +61,7 @@ public class Users {
     @Nullable
     private String pr;
 
+    public UsersDto toDto() {
+        return new UsersDto(id, email, name);
+    }
 }
