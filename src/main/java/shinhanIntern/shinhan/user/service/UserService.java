@@ -1,5 +1,7 @@
 package shinhanIntern.shinhan.user.service;
 
-public interface UserService {
+import shinhanIntern.shinhan.user.domain.Users;
 
+public interface UserService {
+    Users findByEmail ();
 }
