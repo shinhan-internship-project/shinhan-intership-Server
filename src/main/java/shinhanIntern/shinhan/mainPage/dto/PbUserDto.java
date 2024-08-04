@@ -1,41 +1,35 @@
-package shinhanIntern.shinhan.user.domain;
+package shinhanIntern.shinhan.mainPage.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
 
-@Entity
+@Builder
+@ToString
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
+@JsonSerialize
+@JsonDeserialize
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Builder
-public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PbUserDto {
+    @NonNull
     private Long id;
 
     @NonNull
     @Column(nullable = false)
     private String name;
 
-    @NonNull
-    @Column(nullable = false, unique = true)
+    @Email
+    @NotBlank(message = "이메일이 없습니다.")
     private String email;
 
     @NonNull
@@ -46,7 +40,7 @@ public class Users {
     private Long cash;
 
     @Column(nullable = false)
-    private Integer role;
+    private int role;
 
     @Nullable
     private String photo;

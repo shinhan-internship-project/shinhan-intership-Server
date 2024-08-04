@@ -5,6 +5,7 @@ import shinhanIntern.shinhan.user.dto.LoginDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 
 public interface UserService {
+
     Users findByEmail ();
 
     String login(LoginDto loginDto);
