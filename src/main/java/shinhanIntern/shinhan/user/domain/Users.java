@@ -46,7 +46,7 @@ public class Users {
     private Long cash;
 
     @Column(nullable = false)
-    private int role;
+    private Integer role;
 
     @Nullable
     private String photo;
