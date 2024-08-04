@@ -5,15 +5,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import shinhanIntern.shinhan.mainPage.domain.Awards;
+import shinhanIntern.shinhan.mainPage.domain.PbAwardRepository;
+import shinhanIntern.shinhan.mainPage.domain.PbPortpolioRepository;
 import shinhanIntern.shinhan.mainPage.domain.PbUserRepository;
+import shinhanIntern.shinhan.mainPage.domain.Portpolios;
+import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
-import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
 
 @Service
 @AllArgsConstructor
 public class PbUserServiceImpl implements PbUserService {
     private final PbUserRepository pbUserRepository;
+    private final PbAwardRepository pbAwardRepository;
+    private final PbPortpolioRepository pbPortpolioRepository;
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -34,6 +40,17 @@ public class PbUserServiceImpl implements PbUserService {
         return pbList.stream()
             .map(this::toPbUserDto)  // convertToDto 메서드를 사용하여 변환
             .collect(Collectors.toList());  // 변환된 리스트를 수집
+    }
+
+    @Override
+    public PbDetailDto getPbDetail(Long pbId) {
+        Users pbUser = pbUserRepository.findById(pbId)
+            .orElseThrow(()-> new NullPointerException("User not found"));
+        List<Portpolios> portpolios = pbPortpolioRepository.findAllByPbId(pbId);
+        List<Awards> awards = pbAwardRepository.findAllByPbId(pbId);
+
+
+        return new PbDetailDto(pbUser, portpolios, awards);
     }
 
 
