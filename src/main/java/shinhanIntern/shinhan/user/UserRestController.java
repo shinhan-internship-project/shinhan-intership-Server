@@ -1,11 +1,13 @@
 package shinhanIntern.shinhan.user;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import shinhanIntern.shinhan.user.domain.Users;
 import shinhanIntern.shinhan.user.dto.LoginDto;
+import shinhanIntern.shinhan.user.dto.SigninDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 import shinhanIntern.shinhan.user.service.UserService;
 import shinhanIntern.shinhan.utils.ApiUtils;
@@ -30,6 +32,7 @@ public class UserRestController {
 
     @PostMapping("/login")
     public ApiResult<String> login(
+            @Valid
             @RequestBody LoginDto loginDto
     ) {
         try{
@@ -53,4 +56,19 @@ public class UserRestController {
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/signin")
+    public ApiResult<UsersDto> signin(
+            @Valid
+            @RequestBody SigninDto signinDto
+    ) {
+        try{
+            UsersDto newUser = userService.signin(signinDto);
+            return ApiUtils.success(newUser);
+        }catch (NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

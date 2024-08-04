@@ -2,6 +2,7 @@ package shinhanIntern.shinhan.user.service;
 
 import shinhanIntern.shinhan.user.domain.Users;
 import shinhanIntern.shinhan.user.dto.LoginDto;
+import shinhanIntern.shinhan.user.dto.SigninDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 
 public interface UserService {
@@ -11,4 +12,6 @@ public interface UserService {
     String login(LoginDto loginDto);
 
     UsersDto getUserInfoFromToken(String cleanedToken);
+
+    UsersDto signin(SigninDto signinDto);
 }

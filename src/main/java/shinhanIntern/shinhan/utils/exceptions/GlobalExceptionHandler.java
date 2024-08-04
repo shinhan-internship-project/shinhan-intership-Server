@@ -4,6 +4,8 @@ package shinhanIntern.shinhan.utils.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import jakarta.validation.UnexpectedTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,5 +40,12 @@ public class GlobalExceptionHandler {
     public ApiResult handleIllegalArgumentException(IllegalArgumentException error) {
         return ApiUtils.error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResult handleIllegalArgumentException(UnexpectedTypeException error) {
+        return ApiUtils.error(error.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
 
 }
