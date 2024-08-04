@@ -1,11 +1,13 @@
 package shinhanIntern.shinhan.user.service;
 
+import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
 import shinhanIntern.shinhan.user.dto.LoginDto;
+import shinhanIntern.shinhan.user.dto.UsersDto;
 import shinhanIntern.shinhan.utils.jwt.JwtProvider;
 
 @Service
@@ -35,4 +37,10 @@ public class UserServiceImpl implements UserService {
         }
         return "password error";
     }
+
+    public UsersDto getUserInfoFromToken(String cleanedToken) {
+        UsersDto getUserInfo = jwtProvider.getUser(cleanedToken);
+        return getUserInfo;
+    }
+
 }

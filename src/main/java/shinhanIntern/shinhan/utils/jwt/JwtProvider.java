@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import shinhanIntern.shinhan.user.domain.Users;
+import shinhanIntern.shinhan.user.dto.UsersDto;
 
 import java.security.Key;
 import java.util.Date;
@@ -50,6 +51,19 @@ public class JwtProvider {
                 .setExpiration(new Date(now.getTime() + tokenValidTime))
                 .signWith(key)
                 .compact();
+    }
+
+    // 토큰에서 userinfo 가져오기
+    public UsersDto getUser(String token) {
+        String email = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("email", String.class);
+        String name = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("name", String.class);
+        Long id = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("id", Long.class);
+
+        UsersDto getUserInfo = new UsersDto(id, email, name);
+        return getUserInfo;
     }
 
 }
