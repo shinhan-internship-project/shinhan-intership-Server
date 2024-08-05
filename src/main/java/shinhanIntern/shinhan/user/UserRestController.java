@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import shinhanIntern.shinhan.user.domain.Users;
+import shinhanIntern.shinhan.user.dto.FindUserDto;
 import shinhanIntern.shinhan.user.dto.LoginDto;
 import shinhanIntern.shinhan.user.dto.SigninDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
@@ -44,13 +45,13 @@ public class UserRestController {
     }
 
     @GetMapping("/info")
-    public ApiResult<UsersDto> getUser(
+    public ApiResult<FindUserDto> getUser(
             @RequestHeader("Authorization") String token
     ) {
         try{
             // 토큰에서 "Bearer " 접두사를 제거 (일반적인 토큰 형식)
             String cleanedToken = token.replace("Bearer ", "");
-            UsersDto userInfo = userService.getUserInfoFromToken(cleanedToken);
+            FindUserDto userInfo = userService.getUserInfoFromToken(cleanedToken);
             return ApiUtils.success(userInfo);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);

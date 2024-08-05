@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import shinhanIntern.shinhan.user.domain.Users;
+import shinhanIntern.shinhan.user.dto.FindUserDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 
 import java.security.Key;
@@ -23,7 +24,7 @@ public class JwtProvider {
     @Value("${JWT_SECRET_KEY}")
     private String JWT_SECRET_KEY;
     private Key key;
-    private long tokenValidTime = 5 * 60 * 1000L; // 5min
+    private long tokenValidTime = 30 * 60 * 1000L; // 30min
 
     // 시크릿 키 초기화
     @PostConstruct
@@ -40,7 +41,7 @@ public class JwtProvider {
 
         // Custom claims
         claims.put("id", user.getId());
-        claims.put("email", user.getEmail());
+        claims.put("role", user.getRole());
         claims.put("name", user.getName());
 
         // header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
@@ -54,15 +55,15 @@ public class JwtProvider {
     }
 
     // 토큰에서 userinfo 가져오기
-    public UsersDto getUser(String token) {
-        String email = Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().get("email", String.class);
+    public FindUserDto getUser(String token) {
+        int role = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("role", Integer.class);
         String name = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().get("name", String.class);
         Long id = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().get("id", Long.class);
 
-        UsersDto getUserInfo = new UsersDto(id, email, name);
+        FindUserDto getUserInfo = new FindUserDto(id, name, role);
         return getUserInfo;
     }
 
