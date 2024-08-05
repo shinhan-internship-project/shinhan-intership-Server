@@ -1,6 +1,7 @@
 package shinhanIntern.shinhan.utils.exceptions;
 
 
+import java.time.DateTimeException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -42,10 +43,14 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult handleIllegalArgumentException(UnexpectedTypeException error) {
+    public ApiResult handleUnexpectedTypeException(UnexpectedTypeException error) {
         return ApiUtils.error(error.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResult handleDateTimeException(DateTimeException error) {
+        return ApiUtils.error(error.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 }
