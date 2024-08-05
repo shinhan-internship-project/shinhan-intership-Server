@@ -11,6 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @AllArgsConstructor
-public class NewUserDto {
+public class FindUserDto {
     private Long id;
+    private int role;
 }
