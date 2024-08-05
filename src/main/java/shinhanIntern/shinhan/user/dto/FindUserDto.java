@@ -13,5 +13,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class FindUserDto {
     private Long id;
+    private String name;
     private int role;
 }

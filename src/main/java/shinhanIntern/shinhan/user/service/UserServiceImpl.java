@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
+import shinhanIntern.shinhan.user.dto.FindUserDto;
 import shinhanIntern.shinhan.user.dto.LoginDto;
 import shinhanIntern.shinhan.user.dto.SigninDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
@@ -37,8 +38,8 @@ public class UserServiceImpl implements UserService {
         return "password error";
     }
 
-    public UsersDto getUserInfoFromToken(String cleanedToken) {
-        UsersDto getUserInfo = jwtProvider.getUser(cleanedToken);
+    public FindUserDto getUserInfoFromToken(String cleanedToken) {
+        FindUserDto getUserInfo = jwtProvider.getUser(cleanedToken);
         return getUserInfo;
     }
 

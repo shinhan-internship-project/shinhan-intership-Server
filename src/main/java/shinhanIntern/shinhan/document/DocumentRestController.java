@@ -1,12 +1,14 @@
 package shinhanIntern.shinhan.document;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhanIntern.shinhan.document.domain.Documents;
+import shinhanIntern.shinhan.calendarPage.dto.SchedulesDto;
 import shinhanIntern.shinhan.document.dto.DocumentsDto;
+import shinhanIntern.shinhan.document.dto.SendDocumentForm;
 import shinhanIntern.shinhan.document.service.DocumentsService;
 import shinhanIntern.shinhan.utils.ApiUtils;
 import shinhanIntern.shinhan.utils.ApiUtils.ApiResult;
@@ -35,6 +37,19 @@ public class DocumentRestController {
         try{
             List<DocumentsDto> documentsDtoList = documentsService.getDocuments(customerId,1);
             return ApiUtils.success(documentsDtoList);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/send")
+    public ApiUtils.ApiResult<String> sendDocument(
+            @Valid
+            @RequestBody SendDocumentForm sendDocumentForm
+    ){
+        try{
+            String savedContent = documentsService.saveDocument(sendDocumentForm);
+            return ApiUtils.success(savedContent);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
