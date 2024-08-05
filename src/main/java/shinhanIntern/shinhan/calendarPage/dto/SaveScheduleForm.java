@@ -1,4 +1,4 @@
-package shinhanIntern.shinhan.document.dto;
+package shinhanIntern.shinhan.calendarPage.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -8,7 +8,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 @Builder
 @ToString
 @Getter
@@ -16,15 +15,18 @@ import java.time.LocalTime;
 @JsonSerialize
 @JsonDeserialize
 @AllArgsConstructor
-public class SendDocumentForm {
-    @NotNull(message = "input userId")
-    private Long userId;
-    @NotNull(message = "input pbId")
-    private Long pbId;
-    @NotBlank(message = "input content")
-    private String content;
+public class SaveScheduleForm {
+    @NotNull(message = "input id")
+    private Long id;
+    @NotNull(message = "input role")
+    private int role;
+    @NotBlank(message = "input scheduleName")
+    private String scheduleName;
     @NotNull(message = "input date")
     private LocalDate date;
     @NotNull(message = "input time")
     private LocalTime time;
+
+    private String scheduleDescription;
+    private String schedulePlace;
 }

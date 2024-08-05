@@ -68,30 +68,28 @@ public class DocumentsServiceImpl implements DocumentsService {
 
     @Override
     public String saveDocument(SendDocumentForm sendDocumentForm) {
-        try{
-            OffsetDateTime newDateTime = createOffsetDateTime(sendDocumentForm.getDate(), sendDocumentForm.getTime());
 
-            Documents newDocument = Documents.builder()
-                    .userId(sendDocumentForm.getUserId())
-                    .pbId(sendDocumentForm.getPbId())
-                    .content(sendDocumentForm.getContent())
-                    .reservationDate(newDateTime)
-                    .build();
+        OffsetDateTime newDateTime = createOffsetDateTime(sendDocumentForm.getDate(), sendDocumentForm.getTime());
 
-            Schedules newSchedule = Schedules.builder()
-                    .customId(sendDocumentForm.getUserId())
-                    .pbId(sendDocumentForm.getPbId())
-                    .dayTime(newDateTime)
-                    .scheduleName("상담신청예약")
-                    .build();
+        Documents newDocument = Documents.builder()
+                .userId(sendDocumentForm.getUserId())
+                .pbId(sendDocumentForm.getPbId())
+                .content(sendDocumentForm.getContent())
+                .reservationDate(newDateTime)
+                .build();
 
-            documentsRepository.save(newDocument);
-            schedulesRepository.save(newSchedule);
+        Schedules newSchedule = Schedules.builder()
+                .customId(sendDocumentForm.getUserId())
+                .pbId(sendDocumentForm.getPbId())
+                .dayTime(newDateTime)
+                .scheduleName("상담신청예약")
+                .scheduleDescription(sendDocumentForm.getContent())
+                .build();
 
-            return "상담신청완료";
-        }catch (Exception e){
-            return "신청오류";
-        }
+        documentsRepository.save(newDocument);
+        schedulesRepository.save(newSchedule);
+
+        return "상담신청완료";
     }
 
     public OffsetDateTime createOffsetDateTime(LocalDate date, LocalTime time) {
