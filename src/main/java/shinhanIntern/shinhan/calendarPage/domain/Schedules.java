@@ -41,8 +41,5 @@ public class Schedules {
     private String scheduleDescription;
     @Column
     private String schedulePlace;
-    public SchedulesDto toDto() {
-        return new SchedulesDto(dayTime, scheduleName, scheduleDescription,schedulePlace,customId, pbId);
-    }
 
 }

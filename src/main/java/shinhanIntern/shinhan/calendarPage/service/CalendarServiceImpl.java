@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.calendarPage.domain.Schedules;
 import shinhanIntern.shinhan.calendarPage.domain.SchedulesRepository;
-import shinhanIntern.shinhan.calendarPage.dto.CalendarDto;
-import shinhanIntern.shinhan.calendarPage.dto.CalendarReqForm;
-import shinhanIntern.shinhan.calendarPage.dto.DayReqForm;
-import shinhanIntern.shinhan.calendarPage.dto.SchedulesDto;
+import shinhanIntern.shinhan.calendarPage.dto.*;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +16,7 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
-    private final SchedulesRepository schedulesRepositoryRepository;
+    private final SchedulesRepository schedulesRepository;
     private final UserRepository userRepository;
     @Override
     public List<CalendarDto> getCalendars(CalendarReqForm calendarReqForm) {
@@ -34,9 +30,9 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDate endDate = yearMonth.atEndOfMonth();
 
         if(calendarReqForm.getRole()==0)
-            schedulesList = schedulesRepositoryRepository.findAllByPbId(userId);
+            schedulesList = schedulesRepository.findAllByPbId(userId);
         else
-            schedulesList = schedulesRepositoryRepository.findAllByCustomId(userId);
+            schedulesList = schedulesRepository.findAllByCustomId(userId);
 
         // Create a map to count schedules for each date
         Map<LocalDate, Integer> dateCountMap = new HashMap<>();
@@ -59,6 +55,35 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    public String saveSchedule(SaveScheduleForm saveScheduleForm) {
+        Schedules newSchedule;
+        OffsetDateTime newDateTime = createOffsetDateTime(saveScheduleForm.getDate(), saveScheduleForm.getTime());
+
+        if(saveScheduleForm.getRole()==0){
+            newSchedule = Schedules.builder()
+                    .pbId(saveScheduleForm.getId())
+                    .dayTime(newDateTime)
+                    .scheduleName(saveScheduleForm.getScheduleName())
+                    .scheduleDescription(saveScheduleForm.getScheduleDescription())
+                    .schedulePlace(saveScheduleForm.getSchedulePlace())
+                    .build();
+        }
+        else{
+            newSchedule = Schedules.builder()
+                    .customId(saveScheduleForm.getId())
+                    .dayTime(newDateTime)
+                    .scheduleName(saveScheduleForm.getScheduleName())
+                    .scheduleDescription(saveScheduleForm.getScheduleDescription())
+                    .schedulePlace(saveScheduleForm.getSchedulePlace())
+                    .build();
+        }
+
+        schedulesRepository.save(newSchedule);
+
+        return "일정추가완료";
+    }
+
+    @Override
     public List<SchedulesDto> getDaySchedules(DayReqForm dayReqForm) {
         List<SchedulesDto> schedulesDtoList = new ArrayList<>();
         List<Schedules> schedulesList;
@@ -67,9 +92,9 @@ public class CalendarServiceImpl implements CalendarService {
         LocalDate todayDate = dayReqForm.getToday();
 
         if(dayReqForm.getRole()==0)
-            schedulesList = schedulesRepositoryRepository.findAllByPbId(userId);
+            schedulesList = schedulesRepository.findAllByPbId(userId);
         else
-            schedulesList = schedulesRepositoryRepository.findAllByCustomId(userId);
+            schedulesList = schedulesRepository.findAllByCustomId(userId);
 
         for (Schedules schedule : schedulesList) {
             LocalDate tmpDate = schedule.getDayTime().toLocalDate();
@@ -89,6 +114,12 @@ public class CalendarServiceImpl implements CalendarService {
 
     public boolean checkInPeriod(LocalDate startDate, LocalDate endDate, LocalDate tmpDate){
         return (tmpDate.isEqual(startDate) || tmpDate.isAfter(startDate)) && (tmpDate.isEqual(endDate) || tmpDate.isBefore(endDate));
+    }
+
+    public OffsetDateTime createOffsetDateTime(LocalDate date, LocalTime time) {
+        LocalDateTime localDateTime = LocalDateTime.of(date, time);
+        ZoneOffset offset = ZoneOffset.UTC; // 필요한 경우 적절한 ZoneOffset 사용
+        return OffsetDateTime.of(localDateTime, offset);
     }
 
 }

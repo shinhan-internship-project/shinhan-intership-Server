@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import shinhanIntern.shinhan.calendarPage.dto.CalendarDto;
-import shinhanIntern.shinhan.calendarPage.dto.CalendarReqForm;
-import shinhanIntern.shinhan.calendarPage.dto.DayReqForm;
-import shinhanIntern.shinhan.calendarPage.dto.SchedulesDto;
+import shinhanIntern.shinhan.calendarPage.dto.*;
 import shinhanIntern.shinhan.calendarPage.service.CalendarService;
+import shinhanIntern.shinhan.document.dto.SendDocumentForm;
 import shinhanIntern.shinhan.utils.ApiUtils;
 
 import java.util.List;
@@ -42,6 +40,20 @@ public class CalendarPageRestController {
         try{
             List<SchedulesDto> getSchedulesDtoList = calendarService.getDaySchedules(dayReqForm);
             return ApiUtils.success(getSchedulesDtoList);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/save")
+    public ApiUtils.ApiResult<String> saveSchedule(
+            @Valid
+            @RequestBody SaveScheduleForm saveScheduleForm
+
+    ){
+        try{
+            String message = calendarService.saveSchedule(saveScheduleForm);
+            return ApiUtils.success(message);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

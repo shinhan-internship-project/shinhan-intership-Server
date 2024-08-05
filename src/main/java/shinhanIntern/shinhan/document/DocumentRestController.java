@@ -48,9 +48,9 @@ public class DocumentRestController {
             @RequestBody SendDocumentForm sendDocumentForm
     ){
         try{
-            String savedContent = documentsService.saveDocument(sendDocumentForm);
-            return ApiUtils.success(savedContent);
-        }catch(NullPointerException e){
+            String message = documentsService.saveDocument(sendDocumentForm);
+            return ApiUtils.success(message);
+        }catch(Exception e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
