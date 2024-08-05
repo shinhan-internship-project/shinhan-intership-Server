@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DocumentsService {
 
-    List<DocumentsDto> getDocuments(Long pbId);
+    List<DocumentsDto> getDocuments(Long id, int role);
 }

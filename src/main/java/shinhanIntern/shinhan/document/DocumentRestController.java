@@ -23,12 +23,21 @@ public class DocumentRestController {
     @GetMapping("/pb/{id}")
     public ApiResult<List<DocumentsDto>> getPbDocumentsList(@PathVariable("id") Long pbId){
         try{
-            List<DocumentsDto> documentsDtoList = documentsService.getDocuments(pbId);
+            List<DocumentsDto> documentsDtoList = documentsService.getDocuments(pbId,0);
             return ApiUtils.success(documentsDtoList);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/customer/{id}")
+    public ApiResult<List<DocumentsDto>> getCustomerDocumentsList(@PathVariable("id") Long customerId){
+        try{
+            List<DocumentsDto> documentsDtoList = documentsService.getDocuments(customerId,1);
+            return ApiUtils.success(documentsDtoList);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

@@ -32,15 +32,23 @@ public class DocumentsServiceImpl implements DocumentsService {
     }
 
     @Override
-    public List<DocumentsDto> getDocuments(Long id) {
-        List<Documents> documentsList = documentsRepository.findAllByPbId(id);
+    public List<DocumentsDto> getDocuments(Long id, int role) {
+        List<Documents> documentsList;
+        if(role==0)
+            documentsList = documentsRepository.findAllByPbId(id);
+        else
+            documentsList = documentsRepository.findAllByUserId(id);
         List<DocumentsDto> documentsDtoList = new ArrayList<>();
 
         for (Documents document : documentsList) {
-            String reqUserName = findByName(document.getUserId());
+            String reqName;
+            if(role==0)
+                reqName = findByName(document.getUserId());
+            else
+                reqName = findByName(document.getPbId());
 
             DocumentsDto dto = DocumentsDto.builder()
-                    .name(reqUserName)
+                    .name(reqName)
                     .content(document.getContent())
                     .reservationDate(document.getReservationDate())
                     .build();

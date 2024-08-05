@@ -11,4 +11,5 @@ public interface DocumentsRepository extends JpaRepository<Documents, Long> {
     Optional<Documents> findByPbId(Long pbId);
 
     List<Documents> findAllByPbId(Long pbId);
+    List<Documents> findAllByUserId(Long userId);
 }
