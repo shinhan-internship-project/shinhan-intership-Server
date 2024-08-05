@@ -44,8 +44,8 @@ public class ChatServiceImpl implements ChatService {
             return customerChatRooms.stream()
                 .map(chatRooms -> new ChatListDto(
                     chatRooms.getId(),
-                    chatRooms.getPbId(),
                     chatRooms.getCustomerId(),
+                    chatRooms.getPbId(),
                     chatRooms.getPbUncheckedCnt(),
                     chatRooms.getLastMessage()
                 ))
