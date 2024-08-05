@@ -1,5 +1,7 @@
 package shinhanIntern.shinhan.chat.service;
 
+import jakarta.transaction.Transactional;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -8,10 +10,13 @@ import shinhanIntern.shinhan.chat.domain.ChatMessages;
 import shinhanIntern.shinhan.chat.domain.ChatMessagesRepository;
 import shinhanIntern.shinhan.chat.domain.ChatRooms;
 import shinhanIntern.shinhan.chat.domain.ChatRoomsRepository;
+import shinhanIntern.shinhan.chat.domain.SendMessageForm;
 import shinhanIntern.shinhan.chat.dto.ChatListDto;
 import shinhanIntern.shinhan.chat.dto.ChatListForm;
+import shinhanIntern.shinhan.mainPage.dto.EnterRoomForm;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final ChatRoomsRepository chatRoomsRepository;
@@ -20,6 +25,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatListDto> getChatRooms(ChatListForm chatListForm) {
         if (chatListForm.getMyRole() == 0) {            // PB 일때
+
             List<ChatRooms> pbChatRooms = chatRoomsRepository.findAllByPbId(chatListForm.getMyId());
 
             return pbChatRooms.stream()
@@ -49,11 +55,56 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<ChatMessages> getMessages(String roomId) {
-        List<ChatMessages> messages = chatMessagesRepository.findAllByChatRoomId(roomId);
+    public List<ChatMessages> enterRoom(EnterRoomForm enterRoomForm) {
+        ChatRooms room = chatRoomsRepository.findById(enterRoomForm.getRoomId())
+            .orElseThrow(()-> new NullPointerException("해당 채팅방이 없습니다."));
+        if(enterRoomForm.getRole() == 0){   // pb 가 방 들어가면 pb 가 안읽은거 초기화
+            room.setPbUncheckedCnt(0);
+        } else if (enterRoomForm.getRole() == 1) {  // 고객이 방 들어가면 고객이 안읽은거 초기화
+            room.setCustomerUncheckedCnt(0);
+        }
+        List<ChatMessages> messages = chatMessagesRepository.findAllByChatRoomId(enterRoomForm.getRoomId());
         if (messages.isEmpty()) {
             return null;
         }
         return messages;
     }
+
+    @Override
+    public ChatMessages saveMessage(SendMessageForm sendMessageForm) {
+
+        ChatMessages chatMessage = ChatMessages.builder()
+            .chatRoomId(sendMessageForm.getRoomId())
+            .message(sendMessageForm.getMessage())
+            .senderId(sendMessageForm.getUserId())
+            .isCheck(false)
+            .sendTime(OffsetDateTime.now())
+            .build();
+
+        ChatMessages savedMessage = chatMessagesRepository.save(chatMessage);
+        return savedMessage;
+    }
+
+    @Override
+    public void updateRoom(SendMessageForm sendMessageForm, int nowMember) {
+        // 채팅방 찾기
+        ChatRooms room = chatRoomsRepository.findById(sendMessageForm.getRoomId())
+            .orElseThrow(()->new NullPointerException("방이 없습니다."));
+        // 현재 채팅방내에 몇명 있는지에 따라
+        if(nowMember < 2){      // 한명 이하이면 상대방 안읽음에 +1
+            if(sendMessageForm.getRole() == 0){
+                room.setCustomerUncheckedCnt(room.getCustomerUncheckedCnt()+1);
+            }else if (sendMessageForm.getRole() == 1) {
+                room.setPbUncheckedCnt(room.getPbUncheckedCnt()+1);
+            }
+        }else if (nowMember == 2){      // 둘 다 있으면 상대방 안읽음 = 0
+            if(sendMessageForm.getRole() == 0){
+                room.setCustomerUncheckedCnt(0);
+            }else if (sendMessageForm.getRole() == 1) {
+                room.setPbUncheckedCnt(0);
+            }
+        }
+    }
+
+
 }
