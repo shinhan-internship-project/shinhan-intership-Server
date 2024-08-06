@@ -14,6 +14,8 @@ import shinhanIntern.shinhan.chat.domain.SendMessageForm;
 import shinhanIntern.shinhan.chat.dto.ChatListDto;
 import shinhanIntern.shinhan.chat.dto.ChatListForm;
 import shinhanIntern.shinhan.mainPage.dto.EnterRoomForm;
+import shinhanIntern.shinhan.user.domain.UserRepository;
+import shinhanIntern.shinhan.user.domain.Users;
 
 @Service
 @Transactional
@@ -21,6 +23,7 @@ import shinhanIntern.shinhan.mainPage.dto.EnterRoomForm;
 public class ChatServiceImpl implements ChatService {
     private final ChatRoomsRepository chatRoomsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<ChatListDto> getChatRooms(ChatListForm chatListForm) {
@@ -29,26 +32,40 @@ public class ChatServiceImpl implements ChatService {
             List<ChatRooms> pbChatRooms = chatRoomsRepository.findAllByPbId(chatListForm.getMyId());
 
             return pbChatRooms.stream()
-                .map(chatRooms -> new ChatListDto(
-                    chatRooms.getId(),
-                    chatRooms.getPbId(),
-                    chatRooms.getCustomerId(),
-                    chatRooms.getPbUncheckedCnt(),
-                    chatRooms.getLastMessage()
-                ))
+                .map(chatRooms -> {
+                    Long partnerId = chatRooms.getCustomerId();
+                    Users partner = userRepository.findById(partnerId)
+                            .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
+                    return ChatListDto.builder()
+                            .chatRoomCode(chatRooms.getId())
+                            .myId(chatRooms.getPbId())
+                            .partnerId(partnerId)
+                            .unCheckedMessageCount(chatRooms.getPbUncheckedCnt())
+                            .lastMessage(chatRooms.getLastMessage())
+                            .partnerName(partner.getName())
+                            .partnerCategory("")
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         } else if (chatListForm.getMyRole() == 1) {     // 고객 일때
             List<ChatRooms> customerChatRooms = chatRoomsRepository.findAllByCustomerId(chatListForm.getMyId());
 
             return customerChatRooms.stream()
-                .map(chatRooms -> new ChatListDto(
-                    chatRooms.getId(),
-                    chatRooms.getCustomerId(),
-                    chatRooms.getPbId(),
-                    chatRooms.getPbUncheckedCnt(),
-                    chatRooms.getLastMessage()
-                ))
+                .map(chatRooms -> {
+                    Long partnerId = chatRooms.getPbId();
+                    Users partner = userRepository.findById(partnerId)
+                            .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
+                    return ChatListDto.builder()
+                            .chatRoomCode(chatRooms.getId())
+                            .myId(chatRooms.getCustomerId())
+                            .partnerId(partnerId)
+                            .unCheckedMessageCount(chatRooms.getPbUncheckedCnt())
+                            .lastMessage(chatRooms.getLastMessage())
+                            .partnerName(partner.getName())
+                            .partnerCategory(partner.getCategory())
+                            .build();
+                })
                 .collect(Collectors.toList());
         }
         throw new NullPointerException("올바르지 않은 role 입니다.");
