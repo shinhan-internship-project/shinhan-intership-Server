@@ -139,8 +139,8 @@ public class CalendarServiceImpl implements CalendarService {
                         schedule.getScheduleName(),
                         schedule.getScheduleDescription(),
                         schedule.getSchedulePlace(),
-                        schedule.getPbId(),
                         schedule.getCustomId(),
+                        schedule.getPbId(),
                         partnerName
                 ));
             }
