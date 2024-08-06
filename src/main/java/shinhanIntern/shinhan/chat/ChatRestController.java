@@ -78,7 +78,7 @@ public class ChatRestController {
             chatService.updateRoom(sendMessageForm, nowMember);
 
             //  룸에 메세지 쏘기. 들어온 메세지
-            template.convertAndSend("/sub/chatroom/"+roomId, message);
+            template.convertAndSend("/sub/chat/"+roomId, message);
             return ResponseEntity.ok().build();
 
         }catch(NullPointerException e){

@@ -25,7 +25,11 @@ public class ChatListDto {
     private Long partnerId;
     @NonNull
     private int unCheckedMessageCount;
-    @NonNull
+//    @NonNull //lastMessage 없을 시 에러나서 주석처리
     private String lastMessage;
+
+    private String partnerName;
+
+    private String partnerCategory;
 
 }
