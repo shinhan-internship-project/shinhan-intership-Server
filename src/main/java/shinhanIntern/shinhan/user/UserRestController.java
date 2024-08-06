@@ -1,10 +1,16 @@
 package shinhanIntern.shinhan.user;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+import shinhanIntern.shinhan.chat.domain.ChatRooms;
+import shinhanIntern.shinhan.chat.dto.ChatListDto;
+import shinhanIntern.shinhan.chat.dto.ChatListForm;
+import shinhanIntern.shinhan.chat.service.ChatService;
 import shinhanIntern.shinhan.user.domain.Users;
 import shinhanIntern.shinhan.user.dto.*;
 import shinhanIntern.shinhan.user.service.UserService;
@@ -17,6 +23,8 @@ import shinhanIntern.shinhan.utils.ApiUtils.ApiResult;
 @AllArgsConstructor
 public class UserRestController {
     private final UserService userService;
+    private final ChatService chatService;
+    private final SimpMessageSendingOperations template;
 
     @GetMapping("/test")
     public ApiResult<Users> getUserTest() {
@@ -49,6 +57,9 @@ public class UserRestController {
             // 토큰에서 "Bearer " 접두사를 제거 (일반적인 토큰 형식)
             String cleanedToken = token.replace("Bearer ", "");
             FindUserDto userInfo = userService.getUserInfoFromToken(cleanedToken);
+
+            List<ChatListDto> chatRoomsList = chatService.getChatRooms(new ChatListForm(userInfo.getId(), userInfo.getRole()));
+            template.convertAndSend("/topic/user"+userInfo.getId(), chatRoomsList);
             return ApiUtils.success(userInfo);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
