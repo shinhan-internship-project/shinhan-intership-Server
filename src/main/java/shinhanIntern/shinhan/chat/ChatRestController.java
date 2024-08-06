@@ -46,7 +46,7 @@ public class ChatRestController {
         }
     }
 
-    @PostMapping("/createRoom")
+    @PostMapping("/createRoom")     // 상담하기 버튼
     public ApiResult<ChatRooms> createRoom(@Valid @RequestBody ChatCreateForm chatCreateForm){
         try{
             ChatRooms AllRooms = chatService.createRoom(chatCreateForm);
