@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import shinhanIntern.shinhan.user.domain.Offices;
 
 @Builder
 @ToString
@@ -47,5 +48,8 @@ public class PbUserDto {
 
     @Nullable
     private String category;
+
+    @Nullable
+    private Offices office;
 
 }
