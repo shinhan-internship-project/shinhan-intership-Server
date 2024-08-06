@@ -2,6 +2,7 @@ package shinhanIntern.shinhan.chat.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,5 +34,7 @@ public class ChatListDto {
     private String partnerCategory;
 
     private String officeName;
+
+    private OffsetDateTime lastMessageTime;
 
 }

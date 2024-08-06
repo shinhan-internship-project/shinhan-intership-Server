@@ -6,6 +6,8 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,4 +42,7 @@ public class ChatRooms {
 
     @Nullable
     private String lastMessage;
+
+    @NotNull
+    private OffsetDateTime lastMessageTime;
 }
