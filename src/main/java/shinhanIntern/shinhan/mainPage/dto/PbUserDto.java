@@ -48,10 +48,4 @@ public class PbUserDto {
     @Nullable
     private String category;
 
-    @Nullable
-    private String link;
-
-    @Nullable
-    private String pr;
-
 }

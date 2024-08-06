@@ -55,12 +55,6 @@ public class Users {
     @Nullable
     private String category;
 
-    @Nullable
-    private String link;
-
-    @Nullable
-    private String pr;
-
     public UsersDto toDto() {
         return new UsersDto(id, email, name);
     }

@@ -9,6 +9,7 @@ import shinhanIntern.shinhan.calendarPage.dto.*;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -55,7 +56,10 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public String saveSchedule(SaveScheduleForm saveScheduleForm) {
         Schedules newSchedule;
-        LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(), saveScheduleForm.getTime());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+        // Parse the time string to LocalTime
+        LocalTime getTime = LocalTime.parse(saveScheduleForm.getTime(), formatter);
+        LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(),getTime);
 
         boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
         if (isScheduleExists) {

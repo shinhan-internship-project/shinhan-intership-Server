@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import shinhanIntern.shinhan.mainPage.domain.Awards;
-import shinhanIntern.shinhan.mainPage.domain.Portpolios;
+import shinhanIntern.shinhan.mainPage.domain.Portfolios;
 import shinhanIntern.shinhan.user.domain.Users;
 
 @Builder
@@ -21,7 +21,7 @@ import shinhanIntern.shinhan.user.domain.Users;
 @AllArgsConstructor
 public class PbDetailDto {
     private Users pbUser;
-    private List<Portpolios> portpolios;
+    private List<Portfolios> portpolios;
     private List<Awards> awards;
 
 }
