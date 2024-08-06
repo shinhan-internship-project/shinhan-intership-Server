@@ -9,7 +9,7 @@ import shinhanIntern.shinhan.mainPage.domain.Awards;
 import shinhanIntern.shinhan.mainPage.domain.PbAwardRepository;
 import shinhanIntern.shinhan.mainPage.domain.PbPortpolioRepository;
 import shinhanIntern.shinhan.mainPage.domain.PbUserRepository;
-import shinhanIntern.shinhan.mainPage.domain.Portfolios;
+import shinhanIntern.shinhan.mainPage.domain.Portpolios;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
 import shinhanIntern.shinhan.user.domain.Users;
@@ -46,7 +46,7 @@ public class PbUserServiceImpl implements PbUserService {
     public PbDetailDto getPbDetail(Long pbId) {
         Users pbUser = pbUserRepository.findById(pbId)
             .orElseThrow(()-> new NullPointerException("User not found"));
-        List<Portfolios> portpolios = pbPortpolioRepository.findAllByPbId(pbId);
+        List<Portpolios> portpolios = pbPortpolioRepository.findAllByPbId(pbId);
         List<Awards> awards = pbAwardRepository.findAllByPbId(pbId);
 
 
