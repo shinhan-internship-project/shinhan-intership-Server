@@ -88,6 +88,11 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    public List<LocalTime> getEnableTime(CheckTimeForm checkTimeForm) {
+        return null;
+    }
+
+    @Override
     public List<SchedulesDto> getDaySchedules(DayReqForm dayReqForm) {
         List<SchedulesDto> schedulesDtoList = new ArrayList<>();
         List<Schedules> schedulesList;

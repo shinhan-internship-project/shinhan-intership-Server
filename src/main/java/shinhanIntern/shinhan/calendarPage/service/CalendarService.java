@@ -2,6 +2,7 @@ package shinhanIntern.shinhan.calendarPage.service;
 
 import shinhanIntern.shinhan.calendarPage.dto.*;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public interface CalendarService {
@@ -11,4 +12,6 @@ public interface CalendarService {
     List<CalendarDto> getCalendars(CalendarReqForm calendarReqForm);
 
     String saveSchedule(SaveScheduleForm saveScheduleForm);
+
+    List<LocalTime> getEnableTime(CheckTimeForm checkTimeForm);
 }

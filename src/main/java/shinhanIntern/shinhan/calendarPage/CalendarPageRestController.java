@@ -10,6 +10,7 @@ import shinhanIntern.shinhan.calendarPage.service.CalendarService;
 import shinhanIntern.shinhan.document.dto.SendDocumentForm;
 import shinhanIntern.shinhan.utils.ApiUtils;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -54,6 +55,19 @@ public class CalendarPageRestController {
         try{
             String message = calendarService.saveSchedule(saveScheduleForm);
             return ApiUtils.success(message);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/checktime")
+    public ApiUtils.ApiResult<List<LocalTime>> checkTime(
+            @Valid
+            @RequestBody CheckTimeForm checkTimeForm
+    ){
+        try{
+            List<LocalTime> enableTime = calendarService.getEnableTime(checkTimeForm);
+            return ApiUtils.success(enableTime);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
