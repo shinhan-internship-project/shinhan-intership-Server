@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CheckTimeForm {
     @NotNull(message = "input pbId")
-    private Long pbid;
+    private Long pbId;
     @NotNull(message = "input reservationDay")
     private LocalDate reservationDay;
 }

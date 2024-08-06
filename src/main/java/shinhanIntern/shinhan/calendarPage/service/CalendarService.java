@@ -13,5 +13,5 @@ public interface CalendarService {
 
     String saveSchedule(SaveScheduleForm saveScheduleForm);
 
-    List<LocalTime> getEnableTime(CheckTimeForm checkTimeForm);
+    List<String> getEnableTime(CheckTimeForm checkTimeForm);
 }

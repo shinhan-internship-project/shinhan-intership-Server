@@ -1,6 +1,7 @@
 package shinhanIntern.shinhan.calendarPage.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.calendarPage.domain.Schedules;
 import shinhanIntern.shinhan.calendarPage.domain.SchedulesRepository;
@@ -8,11 +9,9 @@ import shinhanIntern.shinhan.calendarPage.dto.*;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
@@ -88,8 +87,22 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<LocalTime> getEnableTime(CheckTimeForm checkTimeForm) {
-        return null;
+    public List<String> getEnableTime(CheckTimeForm checkTimeForm) {
+        LocalDate today = checkTimeForm.getReservationDay();
+        LocalDateTime startOfDay = today.atStartOfDay(); // 오늘 00:00
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX); // 오늘 23:59:59.999999999
+
+        List<String> timeList = new ArrayList<>();
+
+        List<Schedules> schedules = schedulesRepository.findByDayTimeBetweenAndPbId(startOfDay,endOfDay,checkTimeForm.getPbId());
+
+        for(Schedules reservation : schedules){
+            LocalTime existedTime = reservation.getDayTime().toLocalTime();
+            String formattedTime = existedTime.toString();
+            timeList.add(formattedTime);
+        }
+
+        return timeList;
     }
 
     @Override

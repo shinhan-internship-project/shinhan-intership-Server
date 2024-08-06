@@ -61,12 +61,12 @@ public class CalendarPageRestController {
     }
 
     @PostMapping("/checktime")
-    public ApiUtils.ApiResult<List<LocalTime>> checkTime(
+    public ApiUtils.ApiResult<List<String>> checkTime(
             @Valid
             @RequestBody CheckTimeForm checkTimeForm
     ){
         try{
-            List<LocalTime> enableTime = calendarService.getEnableTime(checkTimeForm);
+            List<String> enableTime = calendarService.getEnableTime(checkTimeForm);
             return ApiUtils.success(enableTime);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
