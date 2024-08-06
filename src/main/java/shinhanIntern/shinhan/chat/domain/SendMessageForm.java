@@ -18,6 +18,7 @@ import lombok.ToString;
 public class SendMessageForm {
     private String roomId;
     private Long userId;
+    private Long partnerId;
     private int role;
     private String message;
 }

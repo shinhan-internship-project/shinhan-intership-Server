@@ -17,5 +17,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class EnterRoomForm {
     private String roomId;
+    private Long userId;
     private int role;
 }

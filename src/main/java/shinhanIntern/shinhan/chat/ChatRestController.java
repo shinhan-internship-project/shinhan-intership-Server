@@ -50,6 +50,12 @@ public class ChatRestController {
     public ApiResult<ChatRooms> createRoom(@Valid @RequestBody ChatCreateForm chatCreateForm){
         try{
             ChatRooms AllRooms = chatService.createRoom(chatCreateForm);
+            List<ChatRooms> customerChatList = chatService.findCustomerChatList(chatCreateForm.getMyId());
+            List<ChatRooms> pbChatList = chatService.findPbChatList(chatCreateForm.getPbId());
+
+            template.convertAndSend("/sub/user/"+chatCreateForm.getMyId(), customerChatList);
+            template.convertAndSend("/sub/user/"+chatCreateForm.getPbId(), pbChatList);
+
             return ApiUtils.success(AllRooms);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -61,6 +67,14 @@ public class ChatRestController {
     public ApiResult<List<ChatMessages>> getChatMessages(@RequestBody EnterRoomForm enterRoomForm){
         try{
             List<ChatMessages> messages = chatService.enterRoom(enterRoomForm);
+            if(enterRoomForm.getRole()==0){
+                List<ChatRooms> pbChatList = chatService.findPbChatList(enterRoomForm.getUserId());
+                template.convertAndSend("/sub/user/"+enterRoomForm.getUserId(), pbChatList);
+            }
+            else if(enterRoomForm.getRole()==1){
+                List<ChatRooms> customerChatList = chatService.findCustomerChatList(enterRoomForm.getUserId());
+                template.convertAndSend("/sub/user/"+enterRoomForm.getUserId(), customerChatList);
+            }
             return ApiUtils.success(messages);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -79,6 +93,20 @@ public class ChatRestController {
 
             //  룸에 메세지 쏘기. 들어온 메세지
             template.convertAndSend("/sub/chat/"+roomId, message);
+            if(sendMessageForm.getRole() == 0){
+                List<ChatRooms> customerChatList = chatService.findCustomerChatList(sendMessageForm.getPartnerId());
+                List<ChatRooms> pbChatList = chatService.findPbChatList(sendMessageForm.getUserId());
+
+                template.convertAndSend("/sub/user/"+sendMessageForm.getPartnerId(), customerChatList);
+                template.convertAndSend("/sub/user/"+sendMessageForm.getUserId(), pbChatList);
+            } else if (sendMessageForm.getRole() == 1) {
+                List<ChatRooms> customerChatList = chatService.findCustomerChatList(sendMessageForm.getUserId());
+                List<ChatRooms> pbChatList = chatService.findPbChatList(sendMessageForm.getPartnerId());
+
+                template.convertAndSend("/sub/user/"+sendMessageForm.getUserId(), customerChatList);
+                template.convertAndSend("/sub/user/"+sendMessageForm.getPartnerId(), pbChatList);
+            }
+
             return ResponseEntity.ok().build();
 
         }catch(NullPointerException e){
