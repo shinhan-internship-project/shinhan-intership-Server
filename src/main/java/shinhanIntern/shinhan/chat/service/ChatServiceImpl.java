@@ -120,11 +120,13 @@ public class ChatServiceImpl implements ChatService {
             .customerUncheckedCnt(0)
             .build();
 
-        ChatRooms foundRoom = chatRoomsRepository.findById(createRoomId)
-            .orElseThrow(()-> new NullPointerException("이미 있는 채팅방 입니다."));
+        Optional<ChatRooms> foundRoom = chatRoomsRepository.findById(createRoomId);
 
-        ChatRooms createdRoom = chatRoomsRepository.save(rooms)
-            .orElseThrow(()-> new NullPointerException("채팅방 생성 실패"));
+        if (foundRoom.isPresent()) {
+            throw new NullPointerException("이미 채팅방이 존재합니다.");
+        }
+
+        ChatRooms createdRoom = chatRoomsRepository.save(rooms);
 
         return createdRoom;
     }
