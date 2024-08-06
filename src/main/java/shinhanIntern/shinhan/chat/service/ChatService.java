@@ -20,4 +20,7 @@ public interface ChatService {
     void updateRoom(SendMessageForm sendMessageForm, int nowMember);
 
     ChatRooms createRoom(ChatCreateForm chatCreateForm);
+
+    List<ChatRooms> findCustomerChatList(Long customerId);
+    List<ChatRooms> findPbChatList(Long pbId);
 }

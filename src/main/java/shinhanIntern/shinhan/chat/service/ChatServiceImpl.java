@@ -62,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
                             .chatRoomCode(chatRooms.getId())
                             .myId(chatRooms.getCustomerId())
                             .partnerId(partnerId)
-                            .unCheckedMessageCount(chatRooms.getPbUncheckedCnt())
+                            .unCheckedMessageCount(chatRooms.getCustomerUncheckedCnt())
                             .lastMessage(chatRooms.getLastMessage())
                             .partnerName(partner.getName())
                             .partnerCategory(partner.getCategory())
@@ -146,6 +146,15 @@ public class ChatServiceImpl implements ChatService {
         ChatRooms createdRoom = chatRoomsRepository.save(rooms);
 
         return createdRoom;
+    }
+
+    @Override
+    public List<ChatRooms> findCustomerChatList(Long customerId) {
+        return chatRoomsRepository.findAllByCustomerId(customerId);
+    }
+    @Override
+    public List<ChatRooms> findPbChatList(Long pbId) {
+        return chatRoomsRepository.findAllByPbId(pbId);
     }
 
 

@@ -1,5 +1,6 @@
 package shinhanIntern.shinhan.chat;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -10,6 +11,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Slf4j
 @Component
 public class WebSocketEventListener {
 
@@ -32,6 +34,7 @@ public class WebSocketEventListener {
             sessionRoomMap.put(sessionId, roomId);
             roomSubscriptions.merge(roomId, 1, Integer::sum);
             updateRoomUserCount(roomId);
+            log.info("User subscribed to room {}: {} users", roomId, roomSubscriptions.get(roomId));
         }
     }
 
@@ -44,6 +47,7 @@ public class WebSocketEventListener {
         if (roomId != null) {
             roomSubscriptions.merge(roomId, -1, Integer::sum);
             updateRoomUserCount(roomId);
+            log.info("User disconnected from room {}: {} users", roomId, roomSubscriptions.get(roomId));
         }
     }
 
