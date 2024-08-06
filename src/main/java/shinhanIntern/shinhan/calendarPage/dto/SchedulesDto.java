@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 @Builder
 @ToString
@@ -13,7 +14,7 @@ import java.time.OffsetDateTime;
 @JsonDeserialize
 @AllArgsConstructor
 public class SchedulesDto {
-    private OffsetDateTime dayTime;
+    private LocalDateTime dayTime;
     private String scheduleName;
     private String scheduleDescription;
     private String schedulePlace;

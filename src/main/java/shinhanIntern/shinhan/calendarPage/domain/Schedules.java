@@ -8,6 +8,7 @@ import lombok.*;
 import shinhanIntern.shinhan.calendarPage.dto.SchedulesDto;
 import shinhanIntern.shinhan.user.dto.UsersDto;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -32,7 +33,7 @@ public class Schedules {
 
     @NonNull
     @Column(nullable = false)
-    private OffsetDateTime dayTime;
+    private LocalDateTime dayTime;
     @NonNull
     @Column(nullable = false)
     private String scheduleName;
