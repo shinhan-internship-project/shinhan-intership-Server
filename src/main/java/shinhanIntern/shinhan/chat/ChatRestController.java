@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shinhanIntern.shinhan.chat.domain.ChatMessages;
 import shinhanIntern.shinhan.chat.domain.ChatRooms;
 import shinhanIntern.shinhan.chat.domain.SendMessageForm;
+import shinhanIntern.shinhan.chat.dto.ChatCreateForm;
 import shinhanIntern.shinhan.chat.dto.ChatListDto;
 import shinhanIntern.shinhan.chat.dto.ChatListForm;
 import shinhanIntern.shinhan.chat.service.ChatService;
@@ -44,6 +45,17 @@ public class ChatRestController {
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/createRoom")
+    public ApiResult<ChatRooms> createRoom(@Valid @RequestBody ChatCreateForm chatCreateForm){
+        try{
+            ChatRooms AllRooms = chatService.createRoom(chatCreateForm);
+            return ApiUtils.success(AllRooms);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @PostMapping("/enterRoom")  // 채팅방 입장
     public ApiResult<List<ChatMessages>> getChatMessages(@RequestBody EnterRoomForm enterRoomForm){

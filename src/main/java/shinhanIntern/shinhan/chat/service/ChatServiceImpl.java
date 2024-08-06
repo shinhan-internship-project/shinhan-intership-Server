@@ -3,6 +3,7 @@ package shinhanIntern.shinhan.chat.service;
 import jakarta.transaction.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import shinhanIntern.shinhan.chat.domain.ChatMessagesRepository;
 import shinhanIntern.shinhan.chat.domain.ChatRooms;
 import shinhanIntern.shinhan.chat.domain.ChatRoomsRepository;
 import shinhanIntern.shinhan.chat.domain.SendMessageForm;
+import shinhanIntern.shinhan.chat.dto.ChatCreateForm;
 import shinhanIntern.shinhan.chat.dto.ChatListDto;
 import shinhanIntern.shinhan.chat.dto.ChatListForm;
 import shinhanIntern.shinhan.mainPage.dto.EnterRoomForm;
@@ -104,6 +106,27 @@ public class ChatServiceImpl implements ChatService {
                 room.setPbUncheckedCnt(0);
             }
         }
+    }
+
+    @Override
+    public ChatRooms createRoom(ChatCreateForm chatCreateForm) {
+
+        String createRoomId = chatCreateForm.getPbId() + "chat" + chatCreateForm.getMyId();
+        ChatRooms rooms = ChatRooms.builder()
+            .id(createRoomId)
+            .pbId(chatCreateForm.getPbId())
+            .customerId(chatCreateForm.getMyId())
+            .pbUncheckedCnt(0)
+            .customerUncheckedCnt(0)
+            .build();
+
+        ChatRooms foundRoom = chatRoomsRepository.findById(createRoomId)
+            .orElseThrow(()-> new NullPointerException("이미 있는 채팅방 입니다."));
+
+        ChatRooms createdRoom = chatRoomsRepository.save(rooms)
+            .orElseThrow(()-> new NullPointerException("채팅방 생성 실패"));
+
+        return createdRoom;
     }
 
 
