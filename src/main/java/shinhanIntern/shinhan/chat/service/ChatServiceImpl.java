@@ -50,6 +50,7 @@ public class ChatServiceImpl implements ChatService {
                             .partnerName(partner.getName())
                             .partnerCategory("")
                             .officeName("")
+                            .lastMessageTime(chatRooms.getLastMessageTime())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -74,7 +75,8 @@ public class ChatServiceImpl implements ChatService {
                             .partnerName(partner.getName())
                             .partnerCategory(partner.getCategory())
                             .officeName(officeInfo.getName())
-                            .build();
+                            .lastMessageTime(chatRooms.getLastMessageTime())
+                        .build();
                 })
                 .collect(Collectors.toList());
         }
@@ -122,14 +124,18 @@ public class ChatServiceImpl implements ChatService {
         if(nowMember < 2){      // 한명 이하이면 상대방 안읽음에 +1
             if(sendMessageForm.getRole() == 0){
                 room.setCustomerUncheckedCnt(room.getCustomerUncheckedCnt()+1);
+                room.setLastMessageTime(OffsetDateTime.now());
             }else if (sendMessageForm.getRole() == 1) {
                 room.setPbUncheckedCnt(room.getPbUncheckedCnt()+1);
+                room.setLastMessageTime(OffsetDateTime.now());
             }
         }else if (nowMember == 2){      // 둘 다 있으면 상대방 안읽음 = 0
             if(sendMessageForm.getRole() == 0){
                 room.setCustomerUncheckedCnt(0);
+                room.setLastMessageTime(OffsetDateTime.now());
             }else if (sendMessageForm.getRole() == 1) {
                 room.setPbUncheckedCnt(0);
+                room.setLastMessageTime(OffsetDateTime.now());
             }
         }
     }
