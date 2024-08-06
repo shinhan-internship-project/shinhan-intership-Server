@@ -23,7 +23,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Builder
-public class Portfolios {
+public class Portpolios {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
