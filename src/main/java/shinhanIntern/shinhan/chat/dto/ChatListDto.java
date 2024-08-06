@@ -32,4 +32,6 @@ public class ChatListDto {
 
     private String partnerCategory;
 
+    private String officeName;
+
 }

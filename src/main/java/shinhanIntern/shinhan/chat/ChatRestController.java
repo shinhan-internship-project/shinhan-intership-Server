@@ -47,8 +47,8 @@ public class ChatRestController {
     public ApiResult<ChatRooms> createRoom(@Valid @RequestBody ChatCreateForm chatCreateForm){
         try{
             ChatRooms AllRooms = chatService.createRoom(chatCreateForm);
-            List<ChatRooms> customerChatList = chatService.findCustomerChatList(chatCreateForm.getMyId());
-            List<ChatRooms> pbChatList = chatService.findPbChatList(chatCreateForm.getPbId());
+            List<ChatListDto> customerChatList = chatService.getChatRooms(new ChatListForm(chatCreateForm.getMyId(), chatCreateForm.getMyRole()));
+            List<ChatListDto> pbChatList = chatService.getChatRooms(new ChatListForm(chatCreateForm.getPbId(), 0));
 
             template.convertAndSend("/sub/user/"+chatCreateForm.getMyId(), customerChatList);
             template.convertAndSend("/sub/user/"+chatCreateForm.getPbId(), pbChatList);
@@ -65,11 +65,11 @@ public class ChatRestController {
         try{
             List<ChatMessages> messages = chatService.enterRoom(enterRoomForm);
             if(enterRoomForm.getRole()==0){
-                List<ChatRooms> pbChatList = chatService.findPbChatList(enterRoomForm.getUserId());
+                List<ChatListDto> pbChatList = chatService.getChatRooms(new ChatListForm(enterRoomForm.getUserId(), 0));
                 template.convertAndSend("/sub/user/"+enterRoomForm.getUserId(), pbChatList);
             }
             else if(enterRoomForm.getRole()==1){
-                List<ChatRooms> customerChatList = chatService.findCustomerChatList(enterRoomForm.getUserId());
+                List<ChatListDto> customerChatList = chatService.getChatRooms(new ChatListForm(enterRoomForm.getUserId(), 1));
                 template.convertAndSend("/sub/user/"+enterRoomForm.getUserId(), customerChatList);
             }
             return ApiUtils.success(messages);
@@ -91,14 +91,14 @@ public class ChatRestController {
             //  룸에 메세지 쏘기. 들어온 메세지
             template.convertAndSend("/sub/chat/"+roomId, message);
             if(sendMessageForm.getRole() == 0){
-                List<ChatRooms> customerChatList = chatService.findCustomerChatList(sendMessageForm.getPartnerId());
-                List<ChatRooms> pbChatList = chatService.findPbChatList(sendMessageForm.getUserId());
+                List<ChatListDto> customerChatList = chatService.getChatRooms(new ChatListForm(sendMessageForm.getPartnerId(), 1));
+                List<ChatListDto> pbChatList = chatService.getChatRooms(new ChatListForm(sendMessageForm.getUserId(), 0));
 
                 template.convertAndSend("/sub/user/"+sendMessageForm.getPartnerId(), customerChatList);
                 template.convertAndSend("/sub/user/"+sendMessageForm.getUserId(), pbChatList);
             } else if (sendMessageForm.getRole() == 1) {
-                List<ChatRooms> customerChatList = chatService.findCustomerChatList(sendMessageForm.getUserId());
-                List<ChatRooms> pbChatList = chatService.findPbChatList(sendMessageForm.getPartnerId());
+                List<ChatListDto> customerChatList = chatService.getChatRooms(new ChatListForm(sendMessageForm.getUserId(), 1));
+                List<ChatListDto> pbChatList = chatService.getChatRooms(new ChatListForm(sendMessageForm.getPartnerId(),0));
 
                 template.convertAndSend("/sub/user/"+sendMessageForm.getUserId(), customerChatList);
                 template.convertAndSend("/sub/user/"+sendMessageForm.getPartnerId(), pbChatList);
