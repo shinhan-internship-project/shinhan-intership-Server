@@ -110,6 +110,7 @@ public class ChatServiceImpl implements ChatService {
         ChatRooms room = chatRoomsRepository.findById(sendMessageForm.getRoomId())
             .orElseThrow(()->new NullPointerException("방이 없습니다."));
         // 현재 채팅방내에 몇명 있는지에 따라
+        room.setLastMessage(sendMessageForm.getMessage());
         if(nowMember < 2){      // 한명 이하이면 상대방 안읽음에 +1
             if(sendMessageForm.getRole() == 0){
                 room.setCustomerUncheckedCnt(room.getCustomerUncheckedCnt()+1);
