@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CalendarService {
 
-    List<SchedulesDto> getDaySchedules(DayReqForm dayReqForm);
+    List<ScheduleListDto> getDaySchedules(DayReqForm dayReqForm);
 
     List<CalendarDto> getCalendars(CalendarReqForm calendarReqForm);
 

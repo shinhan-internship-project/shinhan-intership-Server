@@ -17,6 +17,8 @@ import java.util.*;
 @AllArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
     private final SchedulesRepository schedulesRepository;
+    private final UserRepository userRepository;
+
     @Override
     public List<CalendarDto> getCalendars(CalendarReqForm calendarReqForm) {
         List<CalendarDto> calendarDtoList = new ArrayList<>();
@@ -102,7 +104,8 @@ public class CalendarServiceImpl implements CalendarService {
 
         for(Schedules reservation : schedules){
             LocalTime existedTime = reservation.getDayTime().toLocalTime();
-            String formattedTime = existedTime.toString();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            String formattedTime = existedTime.format(formatter);
             timeList.add(formattedTime);
         }
 
@@ -110,33 +113,41 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<SchedulesDto> getDaySchedules(DayReqForm dayReqForm) {
-        List<SchedulesDto> schedulesDtoList = new ArrayList<>();
+    public List<ScheduleListDto> getDaySchedules(DayReqForm dayReqForm) {
+        List<ScheduleListDto> schedulesDtoList = new ArrayList<>();
         List<Schedules> schedulesList;
+        String partnerName;
 
         Long userId = dayReqForm.getId();
+        int role = dayReqForm.getRole();
         LocalDate todayDate = dayReqForm.getToday();
 
-        if(dayReqForm.getRole()==0)
+        if(role==0)
             schedulesList = schedulesRepository.findAllByPbId(userId);
         else
             schedulesList = schedulesRepository.findAllByCustomId(userId);
 
         for (Schedules schedule : schedulesList) {
             LocalDate tmpDate = schedule.getDayTime().toLocalDate();
-            if(todayDate.isEqual(tmpDate))
-                schedulesDtoList.add(new SchedulesDto(
+            if(todayDate.isEqual(tmpDate)) {
+                if (role == 0)
+                    partnerName = userRepository.findById(schedule.getCustomId()).get().getName();
+                else
+                    partnerName = userRepository.findById(schedule.getPbId()).get().getName();
+                schedulesDtoList.add(new ScheduleListDto(
                         schedule.getDayTime(),
                         schedule.getScheduleName(),
                         schedule.getScheduleDescription(),
                         schedule.getSchedulePlace(),
                         schedule.getPbId(),
-                        schedule.getCustomId()
+                        schedule.getCustomId(),
+                        partnerName
                 ));
+            }
         }
+        schedulesDtoList.sort(Comparator.comparing(ScheduleListDto::getDayTime));
         return schedulesDtoList;
     }
-
 
     public boolean checkInPeriod(LocalDate startDate, LocalDate endDate, LocalDate tmpDate){
         return (tmpDate.isEqual(startDate) || tmpDate.isAfter(startDate)) && (tmpDate.isEqual(endDate) || tmpDate.isBefore(endDate));

@@ -34,12 +34,12 @@ public class CalendarPageRestController {
     }
 
     @PostMapping("/today")
-    public ApiUtils.ApiResult<List<SchedulesDto>> getDaySchdules(
+    public ApiUtils.ApiResult<List<ScheduleListDto>> getDaySchdules(
             @Valid
             @RequestBody DayReqForm dayReqForm
     ){
         try{
-            List<SchedulesDto> getSchedulesDtoList = calendarService.getDaySchedules(dayReqForm);
+            List<ScheduleListDto> getSchedulesDtoList = calendarService.getDaySchedules(dayReqForm);
             return ApiUtils.success(getSchedulesDtoList);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
