@@ -16,6 +16,8 @@ import shinhanIntern.shinhan.chat.dto.ChatCreateForm;
 import shinhanIntern.shinhan.chat.dto.ChatListDto;
 import shinhanIntern.shinhan.chat.dto.ChatListForm;
 import shinhanIntern.shinhan.mainPage.dto.EnterRoomForm;
+import shinhanIntern.shinhan.user.domain.OfficeRepository;
+import shinhanIntern.shinhan.user.domain.Offices;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
 
@@ -26,6 +28,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRoomsRepository chatRoomsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
     private final UserRepository userRepository;
+    private final OfficeRepository officeRepository;
 
     @Override
     public List<ChatListDto> getChatRooms(ChatListForm chatListForm) {
@@ -38,6 +41,8 @@ public class ChatServiceImpl implements ChatService {
                     Long partnerId = chatRooms.getCustomerId();
                     Users partner = userRepository.findById(partnerId)
                             .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
+                    Offices officeInfo = officeRepository.findById(partner.getOfficeId())
+                        .orElseThrow(()-> new NullPointerException("회사 정보가 없어용"));
                     return ChatListDto.builder()
                             .chatRoomCode(chatRooms.getId())
                             .myId(chatRooms.getPbId())
@@ -46,6 +51,7 @@ public class ChatServiceImpl implements ChatService {
                             .lastMessage(chatRooms.getLastMessage())
                             .partnerName(partner.getName())
                             .partnerCategory("")
+                            .officeName(officeInfo.getName())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -58,6 +64,8 @@ public class ChatServiceImpl implements ChatService {
                     Long partnerId = chatRooms.getPbId();
                     Users partner = userRepository.findById(partnerId)
                             .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
+                    Offices officeInfo = officeRepository.findById(partner.getOfficeId())
+                        .orElseThrow(()-> new NullPointerException("회사 정보가 없어용"));
                     return ChatListDto.builder()
                             .chatRoomCode(chatRooms.getId())
                             .myId(chatRooms.getCustomerId())
@@ -66,6 +74,7 @@ public class ChatServiceImpl implements ChatService {
                             .lastMessage(chatRooms.getLastMessage())
                             .partnerName(partner.getName())
                             .partnerCategory(partner.getCategory())
+                            .officeName(officeInfo.getName())
                             .build();
                 })
                 .collect(Collectors.toList());
