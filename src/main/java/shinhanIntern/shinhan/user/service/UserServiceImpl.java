@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
-import shinhanIntern.shinhan.user.dto.FindUserDto;
-import shinhanIntern.shinhan.user.dto.LoginDto;
-import shinhanIntern.shinhan.user.dto.SigninDto;
-import shinhanIntern.shinhan.user.dto.UsersDto;
+import shinhanIntern.shinhan.user.dto.*;
 import shinhanIntern.shinhan.utils.jwt.JwtProvider;
 
 @Service
@@ -58,5 +55,14 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(newUser);
         return newUser.toDto();
+    }
+
+    @Override
+    public SearchUserDto searchUser(Long id) {
+        Users foundUser = userRepository.findById(id)
+                .orElseThrow(()-> new NullPointerException("User not found"));
+
+        SearchUserDto getUser = new SearchUserDto(foundUser.getName(),foundUser.getPhoto(), foundUser.getCategory());
+        return getUser;
     }
 }

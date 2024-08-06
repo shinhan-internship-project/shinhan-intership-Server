@@ -14,4 +14,6 @@ public interface SchedulesRepository extends JpaRepository<Schedules, Long> {
 
     boolean existsByDayTime(LocalDateTime dayTime);
 
+    List<Schedules> findByDayTimeBetweenAndPbId(LocalDateTime start, LocalDateTime end, Long pbId);
+
 }
