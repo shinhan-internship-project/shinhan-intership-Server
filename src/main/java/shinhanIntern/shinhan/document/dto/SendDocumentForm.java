@@ -26,5 +26,5 @@ public class SendDocumentForm {
     @NotNull(message = "input date")
     private LocalDate date;
     @NotNull(message = "input time")
-    private LocalTime time;
+    private String time;
 }

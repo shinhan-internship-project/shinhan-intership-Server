@@ -15,6 +15,7 @@ import shinhanIntern.shinhan.user.dto.UsersDto;
 import shinhanIntern.shinhan.utils.ApiUtils;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,8 +69,10 @@ public class DocumentsServiceImpl implements DocumentsService {
 
     @Override
     public String saveDocument(SendDocumentForm sendDocumentForm) {
-
-        LocalDateTime newDateTime = LocalDateTime.of(sendDocumentForm.getDate(), sendDocumentForm.getTime());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+        // Parse the time string to LocalTime
+        LocalTime getTime = LocalTime.parse(sendDocumentForm.getTime(), formatter);
+        LocalDateTime newDateTime = LocalDateTime.of(sendDocumentForm.getDate(),getTime);
 
         boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
         if (isScheduleExists) {
@@ -97,9 +100,4 @@ public class DocumentsServiceImpl implements DocumentsService {
         return "상담신청완료";
     }
 
-    public OffsetDateTime createOffsetDateTime(LocalDate date, LocalTime time) {
-        LocalDateTime localDateTime = LocalDateTime.of(date, time);
-        ZoneOffset offset = ZoneOffset.UTC; // 필요한 경우 적절한 ZoneOffset 사용
-        return OffsetDateTime.of(localDateTime, offset);
-    }
 }
