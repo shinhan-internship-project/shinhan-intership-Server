@@ -50,10 +50,22 @@ public class Users {
     private Integer role;
 
     @Nullable
+    private String category;
+
+    @Nullable
+    private String categoryDetail;
+
+    @Nullable
     private String photo;
 
     @Nullable
-    private String category;
+    private String link;
+    @Nullable
+    private String pr;
+    @Nullable
+    private String certificate;
+    @Nullable
+    private String investType;
 
     public UsersDto toDto() {
         return new UsersDto(id, email, name);
