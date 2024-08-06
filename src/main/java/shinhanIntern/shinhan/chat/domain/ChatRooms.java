@@ -2,6 +2,7 @@ package shinhanIntern.shinhan.chat.domain;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -37,6 +38,6 @@ public class ChatRooms {
     @NonNull
     private int customerUncheckedCnt;
 
-    @NonNull
+    @Nullable
     private String lastMessage;
 }
