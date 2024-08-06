@@ -41,8 +41,6 @@ public class ChatServiceImpl implements ChatService {
                     Long partnerId = chatRooms.getCustomerId();
                     Users partner = userRepository.findById(partnerId)
                             .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
-                    Offices officeInfo = officeRepository.findById(partner.getOfficeId())
-                        .orElseThrow(()-> new NullPointerException("회사 정보가 없어용"));
                     return ChatListDto.builder()
                             .chatRoomCode(chatRooms.getId())
                             .myId(chatRooms.getPbId())
@@ -51,7 +49,7 @@ public class ChatServiceImpl implements ChatService {
                             .lastMessage(chatRooms.getLastMessage())
                             .partnerName(partner.getName())
                             .partnerCategory("")
-                            .officeName(officeInfo.getName())
+                            .officeName("")
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -64,6 +62,9 @@ public class ChatServiceImpl implements ChatService {
                     Long partnerId = chatRooms.getPbId();
                     Users partner = userRepository.findById(partnerId)
                             .orElseThrow(() -> new NullPointerException("채팅 상대방이 존재하지 않습니다."));
+                    // pb 의 오피스 정보
+                    Offices officeInfo = officeRepository.findById(partner.getOfficeId())       // pb 의 오피스 아이디
+                        .orElseThrow(()-> new NullPointerException("회사 정보가 없어용"));
                     return ChatListDto.builder()
                             .chatRoomCode(chatRooms.getId())
                             .myId(chatRooms.getCustomerId())
@@ -72,7 +73,7 @@ public class ChatServiceImpl implements ChatService {
                             .lastMessage(chatRooms.getLastMessage())
                             .partnerName(partner.getName())
                             .partnerCategory(partner.getCategory())
-                            .officeName("")
+                            .officeName(officeInfo.getName())
                             .build();
                 })
                 .collect(Collectors.toList());
