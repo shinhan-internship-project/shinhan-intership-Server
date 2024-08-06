@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 @Builder
 @ToString
@@ -15,5 +16,5 @@ import java.time.OffsetDateTime;
 public class DocumentsDto {
     private String name;
     private String content;
-    private OffsetDateTime reservationDate;
+    private LocalDateTime reservationDate;
 }

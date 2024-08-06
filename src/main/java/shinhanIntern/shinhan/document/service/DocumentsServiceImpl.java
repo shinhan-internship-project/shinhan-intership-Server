@@ -69,7 +69,12 @@ public class DocumentsServiceImpl implements DocumentsService {
     @Override
     public String saveDocument(SendDocumentForm sendDocumentForm) {
 
-        OffsetDateTime newDateTime = createOffsetDateTime(sendDocumentForm.getDate(), sendDocumentForm.getTime());
+        LocalDateTime newDateTime = LocalDateTime.of(sendDocumentForm.getDate(), sendDocumentForm.getTime());
+
+        boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
+        if (isScheduleExists) {
+            throw new DateTimeException("시간중복");
+        }
 
         Documents newDocument = Documents.builder()
                 .userId(sendDocumentForm.getUserId())

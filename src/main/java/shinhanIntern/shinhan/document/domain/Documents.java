@@ -6,6 +6,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -34,5 +35,5 @@ public class Documents {
 
     @NonNull
     @Column(nullable = false)
-    private OffsetDateTime reservationDate;
+    private LocalDateTime reservationDate;
 }

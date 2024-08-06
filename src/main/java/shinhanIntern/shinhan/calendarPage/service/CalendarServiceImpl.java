@@ -17,7 +17,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
     private final SchedulesRepository schedulesRepository;
-    private final UserRepository userRepository;
     @Override
     public List<CalendarDto> getCalendars(CalendarReqForm calendarReqForm) {
         List<CalendarDto> calendarDtoList = new ArrayList<>();
@@ -57,7 +56,12 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public String saveSchedule(SaveScheduleForm saveScheduleForm) {
         Schedules newSchedule;
-        OffsetDateTime newDateTime = createOffsetDateTime(saveScheduleForm.getDate(), saveScheduleForm.getTime());
+        LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(), saveScheduleForm.getTime());
+
+        boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
+        if (isScheduleExists) {
+            throw new DateTimeException("시간중복");
+        }
 
         if(saveScheduleForm.getRole()==0){
             newSchedule = Schedules.builder()
@@ -114,12 +118,6 @@ public class CalendarServiceImpl implements CalendarService {
 
     public boolean checkInPeriod(LocalDate startDate, LocalDate endDate, LocalDate tmpDate){
         return (tmpDate.isEqual(startDate) || tmpDate.isAfter(startDate)) && (tmpDate.isEqual(endDate) || tmpDate.isBefore(endDate));
-    }
-
-    public OffsetDateTime createOffsetDateTime(LocalDate date, LocalTime time) {
-        LocalDateTime localDateTime = LocalDateTime.of(date, time);
-        ZoneOffset offset = ZoneOffset.UTC; // 필요한 경우 적절한 ZoneOffset 사용
-        return OffsetDateTime.of(localDateTime, offset);
     }
 
 }
