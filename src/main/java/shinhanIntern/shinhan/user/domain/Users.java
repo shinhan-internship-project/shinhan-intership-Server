@@ -67,7 +67,7 @@ public class Users {
     @Nullable
     private String investType;
     @Nullable
-    private int officeId;
+    private Integer officeId;
 
     public UsersDto toDto() {
         return new UsersDto(id, email, name);
