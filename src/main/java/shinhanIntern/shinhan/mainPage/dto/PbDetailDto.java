@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 import shinhanIntern.shinhan.mainPage.domain.Awards;
 import shinhanIntern.shinhan.mainPage.domain.Portpolios;
+import shinhanIntern.shinhan.user.domain.Offices;
 import shinhanIntern.shinhan.user.domain.Users;
 
 @Builder
@@ -23,5 +24,6 @@ public class PbDetailDto {
     private Users pbUser;
     private List<Portpolios> portpolios;
     private List<Awards> awards;
+    private Offices office;
 
 }

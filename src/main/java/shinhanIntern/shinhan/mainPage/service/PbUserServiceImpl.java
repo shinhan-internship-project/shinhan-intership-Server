@@ -12,6 +12,8 @@ import shinhanIntern.shinhan.mainPage.domain.PbUserRepository;
 import shinhanIntern.shinhan.mainPage.domain.Portpolios;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
+import shinhanIntern.shinhan.user.domain.OfficeRepository;
+import shinhanIntern.shinhan.user.domain.Offices;
 import shinhanIntern.shinhan.user.domain.Users;
 
 @Service
@@ -20,6 +22,7 @@ public class PbUserServiceImpl implements PbUserService {
     private final PbUserRepository pbUserRepository;
     private final PbAwardRepository pbAwardRepository;
     private final PbPortpolioRepository pbPortpolioRepository;
+    private final OfficeRepository officeRepository;
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -35,11 +38,14 @@ public class PbUserServiceImpl implements PbUserService {
             throw new NullPointerException("User not found");
         }
 
-        List<PbUserDto> resultList = new ArrayList<>();
-
         return pbList.stream()
-            .map(this::toPbUserDto)  // convertToDto 메서드를 사용하여 변환
-            .collect(Collectors.toList());  // 변환된 리스트를 수집
+            .map(user -> {
+                Offices office = officeRepository.findById(user.getOfficeId())
+                    .orElseThrow(()-> new NullPointerException("오피스 아이디 잘못됨")); // officeId를 이용해 오피스 정보 조회
+                PbUserDto dto = toPbUserDto(user, office);
+                return dto;
+            })
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -48,15 +54,16 @@ public class PbUserServiceImpl implements PbUserService {
             .orElseThrow(()-> new NullPointerException("User not found"));
         List<Portpolios> portpolios = pbPortpolioRepository.findAllByPbId(pbId);
         List<Awards> awards = pbAwardRepository.findAllByPbId(pbId);
+        Offices office = officeRepository.findById(pbUser.getOfficeId())
+            .orElseThrow(()-> new NullPointerException("Office not found"));
 
-
-        return new PbDetailDto(pbUser, portpolios, awards);
+        return new PbDetailDto(pbUser, portpolios, awards, office);
     }
 
 
-    public PbUserDto toPbUserDto(Users user) {
+    public PbUserDto toPbUserDto(Users user, Offices office) {
         PbUserDto pbUserDto = new PbUserDto(
-            user.getId(), user.getName(), user.getEmail(),user.getPassword(), user.getCash(), user.getRole(), user.getPhoto(), user.getCategory()
+            user.getId(), user.getName(), user.getEmail(),user.getPassword(), user.getCash(), user.getRole(), user.getPhoto(), user.getCategory(), office
         );
         return pbUserDto;
     }
