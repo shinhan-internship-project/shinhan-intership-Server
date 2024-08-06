@@ -102,7 +102,8 @@ public class CalendarServiceImpl implements CalendarService {
 
         for(Schedules reservation : schedules){
             LocalTime existedTime = reservation.getDayTime().toLocalTime();
-            String formattedTime = existedTime.toString();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            String formattedTime = existedTime.format(formatter);
             timeList.add(formattedTime);
         }
 
