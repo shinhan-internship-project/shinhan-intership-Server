@@ -59,7 +59,7 @@ public class UserRestController {
             FindUserDto userInfo = userService.getUserInfoFromToken(cleanedToken);
 
             List<ChatListDto> chatRoomsList = chatService.getChatRooms(new ChatListForm(userInfo.getId(), userInfo.getRole()));
-            template.convertAndSend("/sub/user"+userInfo.getId(), chatRoomsList);
+            template.convertAndSend("/sub/user/"+userInfo.getId(), chatRoomsList);
             return ApiUtils.success(userInfo);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
