@@ -12,4 +12,6 @@ public interface PbUserService {
     public List<PbUserDto> getPbAll();
 
     List<PbListView> getPbView();
+
+    List<PbListView> getPbViewToCategory(int category);
 }

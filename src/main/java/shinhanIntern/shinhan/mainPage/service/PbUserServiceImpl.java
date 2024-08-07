@@ -1,7 +1,9 @@
 package shinhanIntern.shinhan.mainPage.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,13 @@ public class PbUserServiceImpl implements PbUserService {
     private final PbPortpolioRepository pbPortpolioRepository;
     private final OfficeRepository officeRepository;
     private final PbViewListRepository pbViewListRepository;
+    private static final Map<Integer, String> CATEGORY_MAP = new HashMap<>();
+    static {
+        CATEGORY_MAP.put(0, "증권");
+        CATEGORY_MAP.put(1, "연금");
+        CATEGORY_MAP.put(2, "채권");
+        CATEGORY_MAP.put(3, "파생");
+    }
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -54,6 +63,16 @@ public class PbUserServiceImpl implements PbUserService {
     @Override
     public List<PbListView> getPbView() {
         List<PbListView> pbListView = pbViewListRepository.findAll();
+        if (pbListView.isEmpty()) {
+            throw new NullPointerException("User not found");
+        }
+        return pbListView;
+    }
+
+    @Override
+    public List<PbListView> getPbViewToCategory(int category) {
+        String categoryString = CATEGORY_MAP.get(category);
+        List<PbListView> pbListView = pbViewListRepository.findAllByCategory(categoryString);
         if (pbListView.isEmpty()) {
             throw new NullPointerException("User not found");
         }

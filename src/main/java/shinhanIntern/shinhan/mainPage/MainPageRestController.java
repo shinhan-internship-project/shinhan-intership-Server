@@ -33,6 +33,18 @@ public class MainPageRestController {
         }
     }
 
+    @GetMapping("/pbList/{category}")
+    public ApiResult<List<PbListView>> listToCategory(
+            @PathVariable int category
+    ) {
+        try{
+            List<PbListView> pbListView = pbUserService.getPbViewToCategory(category);
+            return ApiUtils.success(pbListView);
+        }catch(NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/pbListNoUseThis")
     public ApiResult<List<PbUserDto>> getPbList(){
         try{
