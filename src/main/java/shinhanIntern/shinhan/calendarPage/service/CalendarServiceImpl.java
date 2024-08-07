@@ -142,8 +142,12 @@ public class CalendarServiceImpl implements CalendarService {
         for (Schedules schedule : schedulesList) {
             LocalDate tmpDate = schedule.getDayTime().toLocalDate();
             if(todayDate.isEqual(tmpDate)) {
-                if (role == 0)
-                    partnerName = userRepository.findById(schedule.getCustomId()).get().getName();
+                if (role == 0) {
+                    if(schedule.getCustomId()==null)
+                        partnerName = null;
+                    else
+                        partnerName = userRepository.findById(schedule.getCustomId()).get().getName();
+                }
                 else
                     partnerName = userRepository.findById(schedule.getPbId()).get().getName();
                 schedulesDtoList.add(new ScheduleListDto(
