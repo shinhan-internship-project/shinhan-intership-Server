@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @JsonDeserialize
 @AllArgsConstructor
 public class ScheduleListDto {
+    private Long id;
     private LocalDateTime dayTime;
     private String scheduleName;
     private String scheduleDescription;

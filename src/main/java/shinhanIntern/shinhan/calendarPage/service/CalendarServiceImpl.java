@@ -151,6 +151,7 @@ public class CalendarServiceImpl implements CalendarService {
                 else
                     partnerName = userRepository.findById(schedule.getPbId()).get().getName();
                 schedulesDtoList.add(new ScheduleListDto(
+                        schedule.getId(),
                         schedule.getDayTime(),
                         schedule.getScheduleName(),
                         schedule.getScheduleDescription(),
