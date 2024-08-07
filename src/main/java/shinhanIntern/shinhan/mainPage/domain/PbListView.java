@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,10 +58,10 @@ public class PbListView {
     @Nullable
     private String link;
 
-    @NotNull
+    @Nullable
     private String pr;
 
-    @NotNull
+    @Nullable
     private String certificate;
 
     @NotNull
