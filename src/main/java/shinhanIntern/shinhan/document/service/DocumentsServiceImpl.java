@@ -6,14 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.calendarPage.domain.Schedules;
 import shinhanIntern.shinhan.calendarPage.domain.SchedulesRepository;
-import shinhanIntern.shinhan.calendarPage.dto.ScheduleListDto;
 import shinhanIntern.shinhan.document.domain.*;
 import shinhanIntern.shinhan.document.dto.DocumentsDto;
 import shinhanIntern.shinhan.document.dto.SendDocumentForm;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
-import shinhanIntern.shinhan.user.dto.UsersDto;
-import shinhanIntern.shinhan.utils.ApiUtils;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -59,6 +56,7 @@ public class DocumentsServiceImpl implements DocumentsService {
                 reqName = findByName(document.getPbId());
 
             DocumentsDto dto = DocumentsDto.builder()
+                    .id(document.getId())
                     .name(reqName)
                     .content(document.getContent())
                     .reservationDate(document.getReservationDate())
