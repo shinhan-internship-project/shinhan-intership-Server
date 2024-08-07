@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.mainPage.domain.Awards;
 import shinhanIntern.shinhan.mainPage.domain.PbAwardRepository;
+import shinhanIntern.shinhan.mainPage.domain.PbListView;
 import shinhanIntern.shinhan.mainPage.domain.PbPortpolioRepository;
 import shinhanIntern.shinhan.mainPage.domain.PbUserRepository;
+import shinhanIntern.shinhan.mainPage.domain.PbViewListRepository;
 import shinhanIntern.shinhan.mainPage.domain.Portpolios;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
@@ -23,6 +25,7 @@ public class PbUserServiceImpl implements PbUserService {
     private final PbAwardRepository pbAwardRepository;
     private final PbPortpolioRepository pbPortpolioRepository;
     private final OfficeRepository officeRepository;
+    private final PbViewListRepository pbViewListRepository;
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -46,6 +49,15 @@ public class PbUserServiceImpl implements PbUserService {
                 return dto;
             })
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PbListView> getPbView() {
+        List<PbListView> pbListView = pbViewListRepository.findAll();
+        if (pbListView.isEmpty()) {
+            throw new NullPointerException("User not found");
+        }
+        return pbListView;
     }
 
     @Override
