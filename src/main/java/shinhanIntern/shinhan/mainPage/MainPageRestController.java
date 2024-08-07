@@ -5,10 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shinhanIntern.shinhan.mainPage.domain.PbListView;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
@@ -24,9 +21,11 @@ public class MainPageRestController {
     private final PbUserService pbUserService;
 
     @GetMapping("/pbList")
-    public ApiResult<List<PbListView>> list() {
+    public ApiResult<List<PbListView>> list(
+            @RequestParam(value = "distance", defaultValue = "false") boolean isDistance
+    ) {
         try{
-            List<PbListView> pbListView = pbUserService.getPbView();
+            List<PbListView> pbListView = pbUserService.getPbView(isDistance);
             return ApiUtils.success(pbListView);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -35,10 +34,11 @@ public class MainPageRestController {
 
     @GetMapping("/pbList/{category}")
     public ApiResult<List<PbListView>> listToCategory(
-            @PathVariable int category
+            @PathVariable int category,
+		    @RequestParam(value = "distance", defaultValue = "false") boolean isDistance
     ) {
         try{
-            List<PbListView> pbListView = pbUserService.getPbViewToCategory(category);
+            List<PbListView> pbListView = pbUserService.getPbViewToCategory(category,isDistance);
             return ApiUtils.success(pbListView);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

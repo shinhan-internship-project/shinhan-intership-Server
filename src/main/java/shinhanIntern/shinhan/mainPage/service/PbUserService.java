@@ -11,7 +11,7 @@ public interface PbUserService {
 
     public List<PbUserDto> getPbAll();
 
-    List<PbListView> getPbView();
+    List<PbListView> getPbView(boolean isDistance);
 
-    List<PbListView> getPbViewToCategory(int category);
+    List<PbListView> getPbViewToCategory(int category, boolean isDistance);
 }
