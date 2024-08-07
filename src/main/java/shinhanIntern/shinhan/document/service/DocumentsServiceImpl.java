@@ -76,7 +76,7 @@ public class DocumentsServiceImpl implements DocumentsService {
         LocalTime getTime = LocalTime.parse(sendDocumentForm.getTime(), formatter);
         LocalDateTime newDateTime = LocalDateTime.of(sendDocumentForm.getDate(),getTime);
 
-        boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
+        boolean isScheduleExists = schedulesRepository.findByPbIdAndDayTime(sendDocumentForm.getPbId(),newDateTime).isPresent();
         if (isScheduleExists) {
             throw new DateTimeException("시간중복");
         }
