@@ -25,7 +25,7 @@ public class SaveScheduleForm {
     @NotNull(message = "input date")
     private LocalDate date;
     @NotNull(message = "input time")
-    private String time;
+    private String[] time;
 
     private String scheduleDescription;
     private String schedulePlace;

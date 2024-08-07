@@ -2,6 +2,7 @@ package shinhanIntern.shinhan.calendarPage.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.calendarPage.domain.Schedules;
 import shinhanIntern.shinhan.calendarPage.domain.SchedulesRepository;
@@ -35,7 +36,6 @@ public class CalendarServiceImpl implements CalendarService {
         else
             schedulesList = schedulesRepository.findAllByCustomId(userId);
 
-        // Create a map to count schedules for each date
         Map<LocalDate, Integer> dateCountMap = new HashMap<>();
 
         for (Schedules schedule : schedulesList) {
@@ -59,36 +59,48 @@ public class CalendarServiceImpl implements CalendarService {
     public String saveSchedule(SaveScheduleForm saveScheduleForm) {
         Schedules newSchedule;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
-        // Parse the time string to LocalTime
-        LocalTime getTime = LocalTime.parse(saveScheduleForm.getTime(), formatter);
-        LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(),getTime);
 
-        boolean isScheduleExists = schedulesRepository.existsByDayTime(newDateTime);
-        if (isScheduleExists) {
-            throw new DateTimeException("시간중복");
+        LocalDate today = saveScheduleForm.getDate();
+        LocalTime startTime = LocalTime.parse(saveScheduleForm.getTime()[0], formatter);
+        LocalTime endTime = LocalTime.parse(saveScheduleForm.getTime()[saveScheduleForm.getTime().length-1], formatter);
+        LocalDateTime startOfDay = LocalDateTime.of(today,startTime);
+        LocalDateTime endOfDay = LocalDateTime.of(today,endTime);
+
+        List<Schedules> existingSchedules = schedulesRepository.findByDayTimeBetweenAndPbId(startOfDay,endOfDay,saveScheduleForm.getId());
+        for (String time : saveScheduleForm.getTime()) {
+            LocalTime parsedTime = LocalTime.parse(time, formatter);
+            LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(), parsedTime);
+
+            for (Schedules schedule : existingSchedules) {
+                if (schedule.getDayTime().toLocalTime().equals(parsedTime)) {
+                    throw new DateTimeException("시간중복: " + newDateTime.toString());
+                }
+            }
         }
 
-        if(saveScheduleForm.getRole()==0){
-            newSchedule = Schedules.builder()
-                    .pbId(saveScheduleForm.getId())
-                    .dayTime(newDateTime)
-                    .scheduleName(saveScheduleForm.getScheduleName())
-                    .scheduleDescription(saveScheduleForm.getScheduleDescription())
-                    .schedulePlace(saveScheduleForm.getSchedulePlace())
-                    .build();
-        }
-        else{
-            newSchedule = Schedules.builder()
-                    .customId(saveScheduleForm.getId())
-                    .dayTime(newDateTime)
-                    .scheduleName(saveScheduleForm.getScheduleName())
-                    .scheduleDescription(saveScheduleForm.getScheduleDescription())
-                    .schedulePlace(saveScheduleForm.getSchedulePlace())
-                    .build();
-        }
+        for (String time : saveScheduleForm.getTime()) {
+            LocalTime parsedTime = LocalTime.parse(time, formatter);
+            LocalDateTime newDateTime = LocalDateTime.of(saveScheduleForm.getDate(), parsedTime);
 
-        schedulesRepository.save(newSchedule);
-
+            if (saveScheduleForm.getRole() == 0) {
+                newSchedule = Schedules.builder()
+                        .pbId(saveScheduleForm.getId())
+                        .dayTime(newDateTime)
+                        .scheduleName(saveScheduleForm.getScheduleName())
+                        .scheduleDescription(saveScheduleForm.getScheduleDescription())
+                        .schedulePlace(saveScheduleForm.getSchedulePlace())
+                        .build();
+            } else {
+                newSchedule = Schedules.builder()
+                        .customId(saveScheduleForm.getId())
+                        .dayTime(newDateTime)
+                        .scheduleName(saveScheduleForm.getScheduleName())
+                        .scheduleDescription(saveScheduleForm.getScheduleDescription())
+                        .schedulePlace(saveScheduleForm.getSchedulePlace())
+                        .build();
+            }
+            schedulesRepository.save(newSchedule);
+        }
         return "일정추가완료";
     }
 
