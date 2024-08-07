@@ -29,8 +29,8 @@ public class WebSocketEventListener {
         String sessionId = headerAccessor.getSessionId();
         String destination = headerAccessor.getDestination();
 
-        if (destination != null && destination.startsWith("/sub/room/")) {
-            String roomId = destination.substring("/sub/room/".length());
+        if (destination != null && destination.startsWith("/sub/chat/")) {
+            String roomId = destination.substring("/sub/chat/".length());
             sessionRoomMap.put(sessionId, roomId);
             roomSubscriptions.merge(roomId, 1, Integer::sum);
             updateRoomUserCount(roomId);
@@ -53,7 +53,7 @@ public class WebSocketEventListener {
 
     private void updateRoomUserCount(String roomId) {
         int userCount = roomSubscriptions.getOrDefault(roomId, 0);
-        messagingTemplate.convertAndSend("/sub/room/" + roomId + "/userCount", userCount);
+        messagingTemplate.convertAndSend("/sub/chat/" + roomId + "/userCount", userCount);
     }
 
     public int getUserCount(String roomId) {
