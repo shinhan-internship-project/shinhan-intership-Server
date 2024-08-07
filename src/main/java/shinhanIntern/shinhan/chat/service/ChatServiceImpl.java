@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import shinhanIntern.shinhan.chat.domain.ChatMessages;
 import shinhanIntern.shinhan.chat.domain.ChatMessagesRepository;
@@ -21,6 +22,7 @@ import shinhanIntern.shinhan.user.domain.Offices;
 import shinhanIntern.shinhan.user.domain.UserRepository;
 import shinhanIntern.shinhan.user.domain.Users;
 
+@Slf4j
 @Service
 @Transactional
 @AllArgsConstructor
@@ -116,6 +118,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void updateRoom(SendMessageForm sendMessageForm, int nowMember) {
+        log.info("지금 멤버 : "+nowMember);
         // 채팅방 찾기
         ChatRooms room = chatRoomsRepository.findById(sendMessageForm.getRoomId())
             .orElseThrow(()->new NullPointerException("방이 없습니다."));
@@ -130,10 +133,12 @@ public class ChatServiceImpl implements ChatService {
                 room.setLastMessageTime(OffsetDateTime.now());
             }
         }else if (nowMember == 2){      // 둘 다 있으면 상대방 안읽음 = 0
-            if(sendMessageForm.getRole() == 0){
+            if(sendMessageForm.getRole() == 0){     // 둘다 읽음 처리
                 room.setCustomerUncheckedCnt(0);
+                room.setPbUncheckedCnt(0);
                 room.setLastMessageTime(OffsetDateTime.now());
-            }else if (sendMessageForm.getRole() == 1) {
+            }else if (sendMessageForm.getRole() == 1) {     // 둘다 읽음 처리
+                room.setCustomerUncheckedCnt(0);
                 room.setPbUncheckedCnt(0);
                 room.setLastMessageTime(OffsetDateTime.now());
             }
