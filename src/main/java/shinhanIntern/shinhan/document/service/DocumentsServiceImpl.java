@@ -59,6 +59,7 @@ public class DocumentsServiceImpl implements DocumentsService {
                 reqName = findByName(document.getPbId());
 
             DocumentsDto dto = DocumentsDto.builder()
+                    .id(document.getId())
                     .name(reqName)
                     .content(document.getContent())
                     .reservationDate(document.getReservationDate())
