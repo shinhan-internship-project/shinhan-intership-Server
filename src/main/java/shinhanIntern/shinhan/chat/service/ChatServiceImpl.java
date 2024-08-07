@@ -155,6 +155,8 @@ public class ChatServiceImpl implements ChatService {
             .customerId(chatCreateForm.getMyId())
             .pbUncheckedCnt(0)
             .customerUncheckedCnt(0)
+            .lastMessage("")
+            .lastMessageTime(OffsetDateTime.now())
             .build();
 
         Optional<ChatRooms> foundRoom = chatRoomsRepository.findById(createRoomId);
