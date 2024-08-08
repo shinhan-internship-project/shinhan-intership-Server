@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import shinhanIntern.shinhan.mainPage.domain.PbListView;
+import shinhanIntern.shinhan.mainPage.domain.SearchDto;
 import shinhanIntern.shinhan.mainPage.domain.PbListViewNew;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
@@ -82,5 +83,13 @@ public class MainPageRestController {
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    @PostMapping("/searchPb")
+    public ApiResult<List<PbListView>> searchPb(@RequestBody SearchDto searchDto){
+        try{
+            List<PbListView> searchedList = pbUserService.searchKeyword(searchDto.getKeyword());
+            return ApiUtils.success(searchedList);
+        }catch (NullPointerException e){
+            return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

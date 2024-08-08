@@ -115,6 +115,15 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
+    public List<PbListView> searchKeyword(String keyword) {
+        List<PbListView> searchedList= pbViewListRepository.findAllByName(keyword);
+        if (searchedList.isEmpty()) {
+            throw new NullPointerException("User not found");
+        }
+        return searchedList;
+    }
+
+    @Override
     public PbDetailDto getPbDetail(Long pbId) {
         Users pbUser = pbUserRepository.findById(pbId)
             .orElseThrow(()-> new NullPointerException("User not found"));
