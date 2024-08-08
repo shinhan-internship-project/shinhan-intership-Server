@@ -31,6 +31,15 @@ public class PbUserServiceImpl implements PbUserService {
         CATEGORY_MAP.put(2, "채권");
         CATEGORY_MAP.put(3, "파생");
     }
+    private static final Map<Integer, String> TYPE_MAP = new HashMap<>();
+    static {
+        TYPE_MAP.put(1, "안정형");
+        TYPE_MAP.put(2, "안정추구형");
+        TYPE_MAP.put(3, "위험중립형");
+        TYPE_MAP.put(4, "적극투자형");
+        TYPE_MAP.put(5, "공격투자형");
+    }
+
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -57,8 +66,14 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable) {
-        Page<PbListViewNew> pbListViewNew = pbListViewNewRepository.findAll(pageable);
+    public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable,int type) {
+        String typeString = TYPE_MAP.get(type);
+        Page<PbListViewNew> pbListViewNew;
+        if(type==0)
+            pbListViewNew = pbListViewNewRepository.findAll(pageable);
+        else{
+            pbListViewNew = pbListViewNewRepository.findAllByInvestType(typeString,pageable);
+        }
 
         if (pbListViewNew.isEmpty()) {
             throw new NullPointerException("User not found");
@@ -67,7 +82,7 @@ public class PbUserServiceImpl implements PbUserService {
         if(isDistance){
             double currentLat = 37.52158432691758;
             double currentLon = 126.92291854507867;
-            // 거리 계산 후 List로 변환
+
             List<PbListViewNew> sortedList = pbListViewNew.getContent().stream()
                     .sorted(Comparator.comparingDouble(pb ->
                             calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
@@ -79,9 +94,17 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable) {
+    public Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable, int type) {
         String categoryString = CATEGORY_MAP.get(category);
-        Page<PbListViewNew> pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
+        String typeString = TYPE_MAP.get(type);
+
+        Page<PbListViewNew> pbListViewPage;
+        if(type==0)
+            pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
+        else{
+            pbListViewPage = pbListViewNewRepository.findAllByCategoryAndInvestType(categoryString, pageable,typeString);
+        }
+
         if (pbListViewPage.isEmpty()) {
             throw new NullPointerException("User not found");
         }

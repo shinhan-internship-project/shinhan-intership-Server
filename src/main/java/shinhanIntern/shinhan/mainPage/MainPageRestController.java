@@ -2,6 +2,8 @@ package shinhanIntern.shinhan.mainPage;
 
 
 import java.util.List;
+
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,12 +30,13 @@ public class MainPageRestController {
     @GetMapping("/pbList")
     public ApiResult<Page<PbListViewNew>> list(
             @RequestParam(value = "distance", defaultValue = "false") boolean isDistance,
+            @RequestParam(value = "type", defaultValue = "0") int type,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<PbListViewNew> pbListViewNew = pbUserService.getPbView(isDistance, pageable);
+            Page<PbListViewNew> pbListViewNew = pbUserService.getPbView(isDistance, pageable,type);
             return ApiUtils.success(pbListViewNew);
         } catch (NullPointerException e) {
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,13 +46,14 @@ public class MainPageRestController {
     @GetMapping("/pbList/{category}")
     public ApiResult<Page<PbListViewNew>> listToCategory(
             @PathVariable int category,
-		    @RequestParam(value = "distance", defaultValue = "false") boolean isDistance,
+            @RequestParam(value = "type", defaultValue = "0") int type,
+            @RequestParam(value = "distance", defaultValue = "false") boolean isDistance,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         try{
             Pageable pageable = PageRequest.of(page, size);
-            Page<PbListViewNew> pbListViewNew = pbUserService.getPbViewToCategory(category,isDistance,pageable);
+            Page<PbListViewNew> pbListViewNew = pbUserService.getPbViewToCategory(category,isDistance,pageable,type);
             return ApiUtils.success(pbListViewNew);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
