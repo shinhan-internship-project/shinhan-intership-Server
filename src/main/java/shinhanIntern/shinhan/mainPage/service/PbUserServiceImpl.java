@@ -82,7 +82,7 @@ public class PbUserServiceImpl implements PbUserService {
         if(isDistance){
             double currentLat = 37.52158432691758;
             double currentLon = 126.92291854507867;
-            // 거리 계산 후 List로 변환
+
             List<PbListViewNew> sortedList = pbListViewNew.getContent().stream()
                     .sorted(Comparator.comparingDouble(pb ->
                             calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
@@ -94,9 +94,17 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable) {
+    public Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable, int type) {
         String categoryString = CATEGORY_MAP.get(category);
-        Page<PbListViewNew> pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
+        String typeString = TYPE_MAP.get(type);
+
+        Page<PbListViewNew> pbListViewPage;
+        if(type==0)
+            pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
+        else{
+            pbListViewPage = pbListViewNewRepository.findAllByCategoryAndInvestType(categoryString, pageable,typeString);
+        }
+
         if (pbListViewPage.isEmpty()) {
             throw new NullPointerException("User not found");
         }

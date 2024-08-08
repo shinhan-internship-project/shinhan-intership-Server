@@ -17,4 +17,6 @@ public interface PbListViewNewRepository extends JpaRepository<PbListViewNew, Lo
     List<PbListViewNew> findAllByName(@Param("keyword")String keyword);
 
     Page<PbListViewNew> findAllByInvestType(String investType, Pageable pageable);
+
+    Page<PbListViewNew> findAllByCategoryAndInvestType(String categoryString, Pageable pageable, String typeString);
 }
