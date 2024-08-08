@@ -53,6 +53,7 @@ public class ChatServiceImpl implements ChatService {
                             .partnerCategory("")
                             .officeName("")
                             .lastMessageTime(chatRooms.getLastMessageTime())
+                            .photo(partner.getPhoto())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -78,6 +79,7 @@ public class ChatServiceImpl implements ChatService {
                             .partnerCategory(partner.getCategory())
                             .officeName(officeInfo.getName())
                             .lastMessageTime(chatRooms.getLastMessageTime())
+                            .photo(partner.getPhoto())
                         .build();
                 })
                 .collect(Collectors.toList());
