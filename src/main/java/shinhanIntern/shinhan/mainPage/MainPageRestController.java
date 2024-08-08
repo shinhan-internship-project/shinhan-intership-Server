@@ -25,18 +25,6 @@ import shinhanIntern.shinhan.utils.ApiUtils.ApiResult;
 public class MainPageRestController {
     private final PbUserService pbUserService;
 
-//    @GetMapping("/pbList")
-//    public ApiResult<List<PbListView>> list(
-//            @RequestParam(value = "distance", defaultValue = "false") boolean isDistance
-//    ) {
-//        try{
-//            List<PbListView> pbListView = pbUserService.getPbView(isDistance);
-//            return ApiUtils.success(pbListView);
-//        }catch(NullPointerException e){
-//            return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @GetMapping("/pbList")
     public ApiResult<Page<PbListViewNew>> list(
             @RequestParam(value = "distance", defaultValue = "false") boolean isDistance,
@@ -53,13 +41,16 @@ public class MainPageRestController {
     }
 
     @GetMapping("/pbList/{category}")
-    public ApiResult<List<PbListViewNew>> listToCategory(
+    public ApiResult<Page<PbListViewNew>> listToCategory(
             @PathVariable int category,
-		    @RequestParam(value = "distance", defaultValue = "false") boolean isDistance
+		    @RequestParam(value = "distance", defaultValue = "false") boolean isDistance,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         try{
-            List<PbListViewNew> pbListView = pbUserService.getPbViewToCategory(category,isDistance);
-            return ApiUtils.success(pbListView);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PbListViewNew> pbListViewNew = pbUserService.getPbViewToCategory(category,isDistance,pageable);
+            return ApiUtils.success(pbListViewNew);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

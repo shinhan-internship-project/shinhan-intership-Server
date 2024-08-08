@@ -56,23 +56,6 @@ public class PbUserServiceImpl implements PbUserService {
             .collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<PbListView> getPbView(boolean isDistance) {
-//        List<PbListView> pbListView = pbViewListRepository.findAll();
-//        if (pbListView.isEmpty()) {
-//            throw new NullPointerException("User not found");
-//        }
-//
-//        if(isDistance){
-//            double currentLat = 37.52158432691758;
-//            double currentLon = 126.92291854507867;
-//            pbListView.sort(Comparator.comparingDouble(pb ->
-//                    calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude())
-//            ));
-//        }
-//        return pbListView;
-//    }
-
     @Override
     public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable) {
         Page<PbListViewNew> pbListViewNew = pbListViewNewRepository.findAll(pageable);
@@ -96,21 +79,25 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public List<PbListViewNew> getPbViewToCategory(int category, boolean isDistance) {
+    public Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable) {
         String categoryString = CATEGORY_MAP.get(category);
-        List<PbListViewNew> pbListView = pbListViewNewRepository.findAllByCategory(categoryString);
-        if (pbListView.isEmpty()) {
+        Page<PbListViewNew> pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
+        if (pbListViewPage.isEmpty()) {
             throw new NullPointerException("User not found");
         }
 
-        if(isDistance){
+        if (isDistance) {
             double currentLat = 37.52158432691758;
             double currentLon = 126.92291854507867;
-            pbListView.sort(Comparator.comparingDouble(pb ->
-                    calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude())
-            ));
+
+            List<PbListViewNew> sortedList = pbListViewPage.getContent().stream()
+                    .sorted(Comparator.comparingDouble(pb ->
+                            calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
+                    ).collect(Collectors.toList());
+
+            return new PageImpl<>(sortedList, pageable, pbListViewPage.getTotalElements());
         }
-        return pbListView;
+        return pbListViewPage;
     }
 
     @Override
