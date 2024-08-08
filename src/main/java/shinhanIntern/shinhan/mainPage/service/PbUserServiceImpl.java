@@ -3,14 +3,11 @@ package shinhanIntern.shinhan.mainPage.service;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shinhanIntern.shinhan.mainPage.domain.Awards;
-import shinhanIntern.shinhan.mainPage.domain.PbAwardRepository;
-import shinhanIntern.shinhan.mainPage.domain.PbListView;
-import shinhanIntern.shinhan.mainPage.domain.PbPortpolioRepository;
-import shinhanIntern.shinhan.mainPage.domain.PbUserRepository;
-import shinhanIntern.shinhan.mainPage.domain.PbViewListRepository;
-import shinhanIntern.shinhan.mainPage.domain.Portpolios;
+import shinhanIntern.shinhan.mainPage.domain.*;
 import shinhanIntern.shinhan.mainPage.dto.PbDetailDto;
 import shinhanIntern.shinhan.mainPage.dto.PbUserDto;
 import shinhanIntern.shinhan.user.domain.OfficeRepository;
@@ -25,6 +22,8 @@ public class PbUserServiceImpl implements PbUserService {
     private final PbPortpolioRepository pbPortpolioRepository;
     private final OfficeRepository officeRepository;
     private final PbViewListRepository pbViewListRepository;
+    private final PbListViewNewRepository pbListViewNewRepository;
+
     private static final Map<Integer, String> CATEGORY_MAP = new HashMap<>();
     static {
         CATEGORY_MAP.put(0, "증권");
@@ -57,21 +56,44 @@ public class PbUserServiceImpl implements PbUserService {
             .collect(Collectors.toList());
     }
 
+//    @Override
+//    public List<PbListView> getPbView(boolean isDistance) {
+//        List<PbListView> pbListView = pbViewListRepository.findAll();
+//        if (pbListView.isEmpty()) {
+//            throw new NullPointerException("User not found");
+//        }
+//
+//        if(isDistance){
+//            double currentLat = 37.52158432691758;
+//            double currentLon = 126.92291854507867;
+//            pbListView.sort(Comparator.comparingDouble(pb ->
+//                    calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude())
+//            ));
+//        }
+//        return pbListView;
+//    }
+
     @Override
-    public List<PbListView> getPbView(boolean isDistance) {
-        List<PbListView> pbListView = pbViewListRepository.findAll();
-        if (pbListView.isEmpty()) {
+    public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable) {
+        Page<PbListViewNew> pbListViewNew = pbListViewNewRepository.findAll(pageable);
+
+        if (pbListViewNew.isEmpty()) {
             throw new NullPointerException("User not found");
         }
 
         if(isDistance){
             double currentLat = 37.52158432691758;
             double currentLon = 126.92291854507867;
-            pbListView.sort(Comparator.comparingDouble(pb ->
-                    calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude())
-            ));
+            // 거리 계산 후 List로 변환
+            List<PbListViewNew> sortedList = pbListViewNew.getContent().stream()
+                    .sorted(Comparator.comparingDouble(pb ->
+                            calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
+                    ).collect(Collectors.toList());
+
+            // 정렬된 List를 Page로 다시 감싸서 반환
+            return new PageImpl<>(sortedList, pageable, pbListViewNew.getTotalElements());
         }
-        return pbListView;
+        return pbListViewNew;
     }
 
     @Override
