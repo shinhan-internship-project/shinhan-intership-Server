@@ -37,4 +37,6 @@ public class ChatListDto {
 
     private OffsetDateTime lastMessageTime;
 
+    private String photo;
+
 }
