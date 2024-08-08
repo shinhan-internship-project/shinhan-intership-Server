@@ -14,4 +14,6 @@ public interface PbUserService {
     List<PbListView> getPbView(boolean isDistance);
 
     List<PbListView> getPbViewToCategory(int category, boolean isDistance);
+
+    List<PbListView> searchKeyword(String keyword);
 }
