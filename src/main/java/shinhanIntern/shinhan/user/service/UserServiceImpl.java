@@ -13,10 +13,13 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
-    public Users findByEmail() {
-        Users user = userRepository.findByEmail("test@naver.com")
-            .orElseThrow(()-> new NullPointerException("User not found"));
-        return user;
+    public String findByEmail(String testEmail) {
+        boolean canUser = userRepository.findByEmail(testEmail).isPresent();
+
+        if(!canUser)
+            return "사용가능한 이메일입니다.";
+        else
+            return "중복된 이메일입니다.";
     }
 
     public String login(LoginDto loginDto) {

@@ -5,7 +5,7 @@ import shinhanIntern.shinhan.user.dto.*;
 
 public interface UserService {
 
-    Users findByEmail ();
+    String findByEmail (String testEmail);
 
     String login(LoginDto loginDto);
 
