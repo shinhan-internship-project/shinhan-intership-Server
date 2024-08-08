@@ -45,7 +45,6 @@ public class CalendarServiceImpl implements CalendarService {
             }
         }
 
-        // Add only the dates with counts to the calendarDtoList
         for (Map.Entry<LocalDate, Integer> entry : dateCountMap.entrySet()) {
             LocalDate date = entry.getKey();
             int count = entry.getValue();
