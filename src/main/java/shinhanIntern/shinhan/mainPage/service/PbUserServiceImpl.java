@@ -21,7 +21,7 @@ public class PbUserServiceImpl implements PbUserService {
     private final PbAwardRepository pbAwardRepository;
     private final PbPortpolioRepository pbPortpolioRepository;
     private final OfficeRepository officeRepository;
-    private final PbViewListRepository pbViewListRepository;
+//    private final PbViewListRepository pbViewListRepository;
     private final PbListViewNewRepository pbListViewNewRepository;
 
     private static final Map<Integer, String> CATEGORY_MAP = new HashMap<>();
@@ -90,16 +90,15 @@ public class PbUserServiceImpl implements PbUserService {
                             calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
                     ).collect(Collectors.toList());
 
-            // 정렬된 List를 Page로 다시 감싸서 반환
             return new PageImpl<>(sortedList, pageable, pbListViewNew.getTotalElements());
         }
         return pbListViewNew;
     }
 
     @Override
-    public List<PbListView> getPbViewToCategory(int category, boolean isDistance) {
+    public List<PbListViewNew> getPbViewToCategory(int category, boolean isDistance) {
         String categoryString = CATEGORY_MAP.get(category);
-        List<PbListView> pbListView = pbViewListRepository.findAllByCategory(categoryString);
+        List<PbListViewNew> pbListView = pbListViewNewRepository.findAllByCategory(categoryString);
         if (pbListView.isEmpty()) {
             throw new NullPointerException("User not found");
         }
@@ -115,8 +114,8 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public List<PbListView> searchKeyword(String keyword) {
-        List<PbListView> searchedList= pbViewListRepository.findAllByName(keyword);
+    public List<PbListViewNew> searchKeyword(String keyword) {
+        List<PbListViewNew> searchedList= pbListViewNewRepository.findAllByName(keyword);
         if (searchedList.isEmpty()) {
             throw new NullPointerException("User not found");
         }

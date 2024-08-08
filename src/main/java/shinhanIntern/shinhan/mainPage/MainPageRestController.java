@@ -53,12 +53,12 @@ public class MainPageRestController {
     }
 
     @GetMapping("/pbList/{category}")
-    public ApiResult<List<PbListView>> listToCategory(
+    public ApiResult<List<PbListViewNew>> listToCategory(
             @PathVariable int category,
 		    @RequestParam(value = "distance", defaultValue = "false") boolean isDistance
     ) {
         try{
-            List<PbListView> pbListView = pbUserService.getPbViewToCategory(category,isDistance);
+            List<PbListViewNew> pbListView = pbUserService.getPbViewToCategory(category,isDistance);
             return ApiUtils.success(pbListView);
         }catch(NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -84,9 +84,9 @@ public class MainPageRestController {
         }
     }
     @PostMapping("/searchPb")
-    public ApiResult<List<PbListView>> searchPb(@RequestBody SearchDto searchDto){
+    public ApiResult<List<PbListViewNew>> searchPb(@RequestBody SearchDto searchDto){
         try{
-            List<PbListView> searchedList = pbUserService.searchKeyword(searchDto.getKeyword());
+            List<PbListViewNew> searchedList = pbUserService.searchKeyword(searchDto.getKeyword());
             return ApiUtils.success(searchedList);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
