@@ -21,4 +21,6 @@ public class SigninDto {
     private String password;
     @NotNull(message = "자산정보가 없습니다.")
     private Long cash;
+
+    private String photo;
 }
