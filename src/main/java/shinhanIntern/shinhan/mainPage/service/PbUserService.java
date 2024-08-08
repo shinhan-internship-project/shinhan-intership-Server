@@ -17,10 +17,11 @@ public interface PbUserService {
 
 //    List<PbListView> getPbView(boolean isDistance);
 
-    List<PbListView> getPbViewToCategory(int category, boolean isDistance);
+    Page<PbListViewNew> getPbViewToCategory(int category, boolean isDistance,Pageable pageable, int type);
 
 
-    List<PbListView> searchKeyword(String keyword);
+    List<PbListViewNew> searchKeyword(String keyword);
 
-    Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable);
+    Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable,int type);
+
 }
