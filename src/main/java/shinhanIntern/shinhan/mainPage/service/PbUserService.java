@@ -22,5 +22,5 @@ public interface PbUserService {
 
     List<PbListViewNew> searchKeyword(String keyword);
 
-    Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable);
+    Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable,int type);
 }

@@ -15,4 +15,6 @@ public interface PbListViewNewRepository extends JpaRepository<PbListViewNew, Lo
 
     @Query("SELECT u FROM PbListViewNew u WHERE u.name LIKE %:keyword%")
     List<PbListViewNew> findAllByName(@Param("keyword")String keyword);
+
+    Page<PbListViewNew> findAllByInvestType(String investType, Pageable pageable);
 }

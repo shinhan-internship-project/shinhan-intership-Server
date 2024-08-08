@@ -31,6 +31,15 @@ public class PbUserServiceImpl implements PbUserService {
         CATEGORY_MAP.put(2, "채권");
         CATEGORY_MAP.put(3, "파생");
     }
+    private static final Map<Integer, String> TYPE_MAP = new HashMap<>();
+    static {
+        TYPE_MAP.put(1, "안정형");
+        TYPE_MAP.put(2, "안정추구형");
+        TYPE_MAP.put(3, "위험중립형");
+        TYPE_MAP.put(4, "적극투자형");
+        TYPE_MAP.put(5, "공격투자형");
+    }
+
 
     public Users findByEmail() {
         Users user = pbUserRepository.findByEmail("test@naver.com")
@@ -57,8 +66,14 @@ public class PbUserServiceImpl implements PbUserService {
     }
 
     @Override
-    public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable) {
-        Page<PbListViewNew> pbListViewNew = pbListViewNewRepository.findAll(pageable);
+    public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable,int type) {
+        String typeString = TYPE_MAP.get(type);
+        Page<PbListViewNew> pbListViewNew;
+        if(type==0)
+            pbListViewNew = pbListViewNewRepository.findAll(pageable);
+        else{
+            pbListViewNew = pbListViewNewRepository.findAllByInvestType(typeString,pageable);
+        }
 
         if (pbListViewNew.isEmpty()) {
             throw new NullPointerException("User not found");
