@@ -2,6 +2,8 @@ package shinhanIntern.shinhan.user;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,11 +28,14 @@ public class UserRestController {
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
 
-    @GetMapping("/test")
-    public ApiResult<Users> getUserTest() {
+    @PostMapping("/test")
+    public ApiResult<String> getUserTest(
+            @RequestBody String testEmail
+    ) {
         try{
-            Users user = userService.findByEmail();
-            return ApiUtils.success(user);
+            log.info(testEmail);
+            String canUser = userService.findByEmail(testEmail);
+            return ApiUtils.success(canUser);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -54,7 +59,6 @@ public class UserRestController {
             @RequestHeader("Authorization") String token
     ) {
         try{
-            // 토큰에서 "Bearer " 접두사를 제거 (일반적인 토큰 형식)
             String cleanedToken = token.replace("Bearer ", "");
             FindUserDto userInfo = userService.getUserInfoFromToken(cleanedToken);
 
