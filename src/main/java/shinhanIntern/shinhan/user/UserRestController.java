@@ -28,13 +28,10 @@ public class UserRestController {
     private final ChatService chatService;
     private final SimpMessageSendingOperations template;
 
-    @PostMapping("/test")
-    public ApiResult<String> getUserTest(
-            @RequestBody String testEmail
-    ) {
+    @PostMapping("/checkEmail")
+    public ApiResult<String> getUserTest(@RequestBody CheckEmailDto checkEmailDto) {
         try{
-            log.info(testEmail);
-            String canUser = userService.findByEmail(testEmail);
+            String canUser = userService.findByEmail(checkEmailDto.getEmail());
             return ApiUtils.success(canUser);
         }catch (NullPointerException e){
             return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
