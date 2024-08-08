@@ -43,6 +43,7 @@ public class JwtProvider {
         claims.put("id", user.getId());
         claims.put("role", user.getRole());
         claims.put("name", user.getName());
+        claims.put("photo",user.getPhoto());
 
         // header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
         // payload에 들어갈 내용
@@ -62,8 +63,10 @@ public class JwtProvider {
                 .parseClaimsJws(token).getBody().get("name", String.class);
         Long id = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().get("id", Long.class);
+        String photo = Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().get("photo", String.class);
 
-        FindUserDto getUserInfo = new FindUserDto(id, name, role);
+        FindUserDto getUserInfo = new FindUserDto(id, name, role,photo);
         return getUserInfo;
     }
 
