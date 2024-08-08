@@ -11,12 +11,12 @@ import java.util.List;
 
 @Repository
 public interface PbListViewNewRepository extends JpaRepository<PbListViewNew, Long> {
-    Page<PbListViewNew> findAllByCategory(String category, Pageable pageable);
+    List<PbListViewNew> findAllByCategory(String category);
 
     @Query("SELECT u FROM PbListViewNew u WHERE u.name LIKE %:keyword%")
     List<PbListViewNew> findAllByName(@Param("keyword")String keyword);
 
-    Page<PbListViewNew> findAllByInvestType(String investType, Pageable pageable);
+    List<PbListViewNew> findAllByInvestType(String investType);
 
-    Page<PbListViewNew> findAllByCategoryAndInvestType(String categoryString, Pageable pageable, String typeString);
+    List<PbListViewNew> findAllByCategoryAndInvestType(String categoryString, String typeString);
 }

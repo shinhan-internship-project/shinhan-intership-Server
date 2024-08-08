@@ -68,29 +68,27 @@ public class PbUserServiceImpl implements PbUserService {
     @Override
     public Page<PbListViewNew> getPbView(boolean isDistance, Pageable pageable,int type) {
         String typeString = TYPE_MAP.get(type);
-        Page<PbListViewNew> pbListViewNew;
-        if(type==0)
-            pbListViewNew = pbListViewNewRepository.findAll(pageable);
-        else{
-            pbListViewNew = pbListViewNewRepository.findAllByInvestType(typeString,pageable);
+        List<PbListViewNew> pbListViewNew;
+
+        if (type == 0) {
+            pbListViewNew = pbListViewNewRepository.findAll();
+        } else {
+            pbListViewNew = pbListViewNewRepository.findAllByInvestType(typeString);
         }
 
         if (pbListViewNew.isEmpty()) {
             throw new NullPointerException("User not found");
         }
 
-        if(isDistance){
-            double currentLat = 37.52158432691758;
-            double currentLon = 126.92291854507867;
-
-            List<PbListViewNew> sortedList = pbListViewNew.getContent().stream()
-                    .sorted(Comparator.comparingDouble(pb ->
-                            calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
-                    ).collect(Collectors.toList());
-
-            return new PageImpl<>(sortedList, pageable, pbListViewNew.getTotalElements());
+        if (isDistance) {
+            pbListViewNew.sort(Comparator.comparingDouble(PbListViewNew::getOfficeDistance));
         }
-        return pbListViewNew;
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), pbListViewNew.size());
+        List<PbListViewNew> paginatedList = pbListViewNew.subList(start, end);
+
+        return new PageImpl<>(paginatedList, pageable, pbListViewNew.size());
     }
 
     @Override
@@ -98,29 +96,26 @@ public class PbUserServiceImpl implements PbUserService {
         String categoryString = CATEGORY_MAP.get(category);
         String typeString = TYPE_MAP.get(type);
 
-        Page<PbListViewNew> pbListViewPage;
+        List<PbListViewNew> pbListViewPage;
         if(type==0)
-            pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString, pageable);
-        else{
-            pbListViewPage = pbListViewNewRepository.findAllByCategoryAndInvestType(categoryString, pageable,typeString);
-        }
+            pbListViewPage = pbListViewNewRepository.findAllByCategory(categoryString);
+        else
+            pbListViewPage = pbListViewNewRepository.findAllByCategoryAndInvestType(categoryString,typeString);
+
 
         if (pbListViewPage.isEmpty()) {
             throw new NullPointerException("User not found");
         }
 
         if (isDistance) {
-            double currentLat = 37.52158432691758;
-            double currentLon = 126.92291854507867;
-
-            List<PbListViewNew> sortedList = pbListViewPage.getContent().stream()
-                    .sorted(Comparator.comparingDouble(pb ->
-                            calculateDistance(currentLat, currentLon, pb.getOfficeLatitude(), pb.getOfficeLongitude()))
-                    ).collect(Collectors.toList());
-
-            return new PageImpl<>(sortedList, pageable, pbListViewPage.getTotalElements());
+            pbListViewPage.sort(Comparator.comparingDouble(PbListViewNew::getOfficeDistance));
         }
-        return pbListViewPage;
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), pbListViewPage.size());
+        List<PbListViewNew> paginatedList = pbListViewPage.subList(start, end);
+
+        return new PageImpl<>(paginatedList, pageable, pbListViewPage.size());
     }
 
     @Override
