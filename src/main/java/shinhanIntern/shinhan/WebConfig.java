@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 public class WebConfig{
     private static final String DEVELOP_FRONT_ADDRESS = "http://133.186.251.189:5173";
 

@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
                 .password(signinDto.getPassword())
                 .cash(signinDto.getCash())
                 .role(1)
+                .photo(signinDto.getPhoto())
                 .build();
         userRepository.save(newUser);
         return newUser.toDto();

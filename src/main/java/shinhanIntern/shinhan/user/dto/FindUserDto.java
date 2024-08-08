@@ -15,4 +15,5 @@ public class FindUserDto {
     private Long id;
     private String name;
     private int role;
+    private String photo;
 }
